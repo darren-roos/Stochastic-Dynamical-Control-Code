@@ -33,13 +33,13 @@ B = [0.7 0.4 0.8;0.3 0.6 0.2] # emission probabilities
 
 mod1 = HMM.hmm(A, B) # create the HMM object
 initial = [0.9, 0.1, 0.0] # initial state distribution
-evidence = [1,1,2,1,2,1,2] # evidence/observations
+evidence = Int64[1,1,2,1,2,1,2] # evidence/observations
 
 filter_me = HMM.forward(mod1, initial, evidence)
 
 
 fbs_me = zeros(length(initial), length(evidence))
-for k=1:length(evidence)
+for k::Int64=1:length(evidence)
   fbs_me[:, k] = HMM.smooth(mod1, initial, evidence, k) # works!
 end
 

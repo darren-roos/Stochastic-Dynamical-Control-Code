@@ -55,12 +55,12 @@ g(x) = C*x# state observation
 cstr_pf = PF.Model(f,g)
 
 # Initialise the PF
-nP = 50 #number of particles.
+nP = Int64[50][1] #number of particles.
 init_state_mean = init_state # initial state mean
 init_state_covar = eye(2)*1e-6 # initial covariance
 init_state_covar[4] = 2.0
 init_dist = MvNormal(init_state_mean, init_state_covar) # prior distribution
-particles = PF.init_PF(init_dist, nP, 2) # initialise the particles
+particles = PF.init_PF(init_dist, nP, Int64[2][1]) # initialise the particles
 state_covar = eye(2) # state covariance
 state_covar[1] = 1e-4
 state_covar[2] = 4.

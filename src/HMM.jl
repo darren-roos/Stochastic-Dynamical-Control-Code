@@ -92,9 +92,9 @@ function viterbi(model::hmm, initial::Array{Float64, 1}, evidence::Array{Int64, 
   #initialise recursion
   mu[:, end] = 1.0
 
-  for ke=ne:-1:2 # iterate backwards over evidence
+  for ke::Int64=ne:-1:2 # iterate backwards over evidence
 
-    for ks=1:ns #iterate over each state
+    for ks::Int64=1:ns #iterate over each state
       mu[ks,ke-1] = max_viterbi(model, ks, evidence[ke], mu[:, ke])
     end
     mu[:, ke-1] = normalise(mu[:, ke-1])

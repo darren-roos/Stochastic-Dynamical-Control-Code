@@ -51,7 +51,7 @@ filter = HMM.forward(hmm, initial, observations)
 
 # Smoothing
 fbs = zeros(length(initial), length(observations))
-for k=1:length(observations)
+for k::Int64=1:length(observations)
   fbs[:, k] = HMM.smooth(hmm, initial, observations, k)
 end
 
@@ -74,7 +74,7 @@ end
 
 rc("font", family="serif", serif="Computer Modern", size = 24)
 rc("text", usetex=true)
-fs = 18
+fs = 6
 figure(1) # Inference - no prediction
 for t=1:T
   subplot(6, T, t)

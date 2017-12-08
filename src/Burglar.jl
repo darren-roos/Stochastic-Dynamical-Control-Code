@@ -10,12 +10,12 @@ module Burglar
 using HMM
 
 type house
-  floor :: Array{Int64, 2}
-  creaks :: Array{Int64, 2}
-  bumps :: Array{Int64, 2}
-  n :: Int64
-  function house(n::Int64)
-    f = zeros(Int64,n,n)
+  floor :: Array{Int32, 2}
+  creaks :: Array{Int32, 2}
+  bumps :: Array{Int32, 2}
+  n :: Int32
+  function house(n::Int32)
+    f = zeros(Int32,n,n)
     c = rand(0:1, n,n)
     b = rand(0:1, n,n)
     initial_loc = rand(1:n)
@@ -77,7 +77,7 @@ end
 
 function getLegalMoves(model::house)
   # Returns an array of legal moves
-  moves = Int64[]
+  moves = Int32[]
   loc = getLocation(model)
 
   up = loc-1
@@ -93,9 +93,9 @@ function getLegalMoves(model::house)
   return moves
 end
 
-function getLegalMoves(n::Int64, k::Int64)
+function getLegalMoves(n::Int32, k::Int32)
   # Returns an array of legal moves
-  moves = Int64[]
+  moves = Int32[]
   loc = k
 
   up = loc-1

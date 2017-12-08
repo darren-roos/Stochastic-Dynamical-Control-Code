@@ -20,7 +20,7 @@ using LLDS
 # Specify System
 model = begin
   dt = 0.1
-  T = 400
+  T = Int64[400][1]
   A = eye(6) # state transition
   A[1,5] = dt
   A[2,1] = dt
@@ -52,7 +52,7 @@ end
 if "filtercovar.csv" in dircontent
   filtercovar = reshape(readcsv("filtercovar.csv"), 6,6,T) #read in the ideal answers
 else
-  filtercovar = reshape(readcsv(joinpath("test","filtercovar.csv")), 6, 6, T)
+  filtercovar = reshape(readcsv(joinpath("test","filtercovar.csv")), 6, 6, Int32[T][1])
 end
 if "filtermeans.csv" in dircontent
   filtermeans = readcsv("filtermeans.csv") #read in the ideal answers
@@ -62,7 +62,7 @@ end
 if "smoothcovar.csv" in dircontent
   smoothedcovar = reshape(readcsv("smoothcovar.csv"), 6,6, T) #read in the ideal answers
 else
-  smoothedcovar = reshape(readcsv(joinpath("test","smoothcovar.csv")),6,6,T)
+  smoothedcovar = reshape(readcsv(joinpath("test","smoothcovar.csv")),6,6,Int32[T][1])
 end
 if "smoothmeans.csv" in dircontent
   smoothedmeans = readcsv("smoothmeans.csv") #read in the ideal answers
