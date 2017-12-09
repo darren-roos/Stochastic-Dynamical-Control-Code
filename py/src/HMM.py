@@ -34,4 +34,24 @@ class HMM:
 
         return alpha
 
+    def backward(self, evidence):
+        # Backwards algorithm for hmm.
+        ns = len(self.tp) #number of states
+        ne = len(evidence) #number of observations
+        beta = numpy.zeros([ns, ne]) #matrix of forward probabilities
+
+        #initialise
+        beta[:,-1] = [1.0]*ns # for correct Bayes
+
+        for ke in range(ne-1,0,-1): # iterate backwards over evidence, evidence at t does not matter
+
+            for ks in range(ns): # iterate over states
+                recur = 0
+                for ks_next in range(ns): #sum over next state
+                    recur += self.ep[evidence[ke]][ks_next]*self.tp[ks_next][ks]*beta[ks_next][ke]
+
+                beta[ks][ke-1] = recur
+
+            beta[:, ke-1] = self.normalise(beta[:, ke-1])
+        return beta
 
