@@ -49,3 +49,71 @@ class HMM:
         smoothed = self.normalise(alpha*beta)
 
         return smoothed
+
+    def viterbi(self, initial, evidence):
+        # The Viterbi algorithm for the most likely joint sequence of states given observations.
+        ns = len(self.tp) #number of states
+        ne = len(evidence) #number of observations
+        mu = numpy.zeros([ns, ne]) #matrix of most likely values per state
+
+        ## Find mu
+        #initialise recursion
+        mu[:,-1] = 1
+
+        for ke in range(ne-1,0,-1): # iterate backwards over evidence
+
+            for ks in range(ns): #iterate over each state
+                mu[ks][ke-1] = self.max_viterbi(ks, evidence[ke], mu[:, ke])
+            mu[:, ke-1] = self.normalise(mu[:, ke-1])
+
+        ## Find sequence of states using mu
+        mlss = numpy.zeros([ne], dtype=numpy.int)
+        mlss[1] = self.arg_viterbi_init(initial, evidence[1], mu[:,1])
+
+        for ke in range(1,ne): # find the most likely sequence of states
+            mlss[ke] = self.arg_viterbi(evidence[ke], mu[:,ke], mlss[ke-1])
+
+        return mlss
+
+    def max_viterbi(self, state, evidence, mu_before):
+        # Finds the maximum mu factor given the evidence and previous state
+        ns = len(self.tp) #number of states
+        vmax = 0
+
+        for k in range(ns):
+            tmax = self.tp[k][state]*self.ep[evidence][k]*mu_before[k]
+            if tmax > vmax:
+                vmax = tmax
+
+        return vmax
+
+    def arg_viterbi_init(self, initial, evidence, mu_vec):
+        # Finds the most likely state given the first observation
+
+        ns = len(self.tp) #number of states
+        mls = 0 #most likely state
+        smax = 0#state value maximum
+
+        for k in range(ns):
+            tmax = initial[k]*self.ep[evidence][k]*mu_vec[k]
+
+            if tmax > smax:
+                mls = k
+                smax = tmax
+
+        return mls
+
+    def arg_viterbi(self, evidence, mu_vec, prev_mls):
+        # Finds the most likely sequence of states using mu
+        ns = len(self.tp) #number of states
+        mls = 0 #most likely state
+        smax = 0 #state value maximum
+        for ks in range(ns):
+            tmax = self.tp[ks][prev_mls]*self.ep[evidence][ks]*mu_vec[ks]
+
+            if tmax > smax:
+                mls = ks
+                smax = tmax
+
+        return mls
+
