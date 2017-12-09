@@ -55,3 +55,16 @@ class HMM:
             beta[:, ke-1] = self.normalise(beta[:, ke-1])
         return beta
 
+
+    def smooth(self, initial, evidence, timeLocation):
+        # Forwards-Backwards algorithm. Note that it is required to split the evidence
+        # accordingly.
+        forwardEvidence = evidence[0:timeLocation]
+        backwardEvidence = evidence[timeLocation:]
+
+        alpha = self.forward(initial, forwardEvidence)[:, -1]
+        beta = self.backward(backwardEvidence)[:,0]
+
+        smoothed = self.normalise(alpha*beta)
+
+        return smoothed
