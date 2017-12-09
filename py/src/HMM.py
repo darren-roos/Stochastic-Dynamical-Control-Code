@@ -15,22 +15,11 @@ class HMM:
         ne = len(evidence) #number of observations
         alpha = numpy.zeros([ns, ne]) #matrix of forward probabilities
 
-        for ks in range(ns): # first observation
-            alpha[ks][0] = self.ep[evidence[0]][ks]*initial[ks]
-        
-        alpha[:,0] = self.normalise(alpha[:,0]) # normalise probabilities
+        alpha[:,0] = self.normalise(self.ep[evidence[0]]*initial)
 
         for ke in range(1,ne): # loop through each evidence observation
-
-            for ks in range(ns): # loop through each state to build up the joint given observations
-
-                prediction = 0 # the prediction part given the old joint
-                for ks_pred in range(ns):
-                    prediction += self.tp[ks][ks_pred]*alpha[ks_pred][ke-1] # can be made faster by looping column major!
-
-                alpha[ks][ke] = self.ep[evidence[ke]][ks]*prediction
-
-            alpha[:, ke] = self.normalise(alpha[:,ke]) # normalise probabilities
+            predictions = numpy.matmul(self.tp, alpha[:,ke-1])
+            alpha[:,ke] = self.normalise(self.ep[evidence[ke]]*predictions)
 
         return alpha
 
