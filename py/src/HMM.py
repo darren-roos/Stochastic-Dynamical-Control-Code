@@ -117,3 +117,28 @@ class HMM:
 
         return mls
 
+    def prediction(self, initial, evidence):
+        # One step ahead hidden state and observation estimator
+        ns = len(self.tp)
+        ne = len(self.ep)
+
+        ## State prediction
+        pred_states = numpy.zeros(ns)
+        filter_ = self.forward(initial, evidence)[:, -1]
+        for ks in range(ns):
+            temp = 0
+            for k in range(ns):
+                temp += filter_[k]*self.tp[ks][k]
+            pred_states[ks] = temp
+
+        ## Evidence Prediction
+        pred_evidence = numpy.zeros(ne)
+        for ke in range(ne):
+            temp = 0
+            for ks1 in range(ns): #h_t
+                for ks2 in range(ns): #h_t+1
+                    temp += filter_[ks1]*self.tp[ks2][ks1]*self.ep[ke][ks2]
+
+            pred_evidence[ke] = temp
+
+        return pred_states, pred_evidence
