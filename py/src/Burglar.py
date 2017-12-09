@@ -1,15 +1,15 @@
-import random, my_utils, HMM
+import random, numpy, HMM
 
 class House:
     def __init__(self, n):
         self.n = n
-        self.creaks = my_utils.zeros(n,n, lambda : int(2*random.random()))
-        self.bumps = my_utils.zeros(n,n, lambda : int(2*random.random()))
+        self.creaks = numpy.random.randint(0, 2, size = (n,n))
+        self.bumps = numpy.random.randint(0, 2, size = (n,n))
         self.burglar = int(random.random()*self.n)
 
     def createHMM(self):
-        tp = my_utils.zeros(self.n**2, self.n**2)
-        ep = my_utils.zeros(4, self.n**2)
+        tp = numpy.zeros(self.n**2, self.n**2)
+        ep = numpy.zeros(4, self.n**2)
         # Transmission probability tables
         for col in range(self.n**2):
             legalMoves = self.getLegalMoves(col)
@@ -31,8 +31,6 @@ class House:
         # Emission 2: creak but no bump
         # Emission 3: no creak but a bump
         # Emission 4: neither a creak nor a bump
-        self.creaks = [[1,1],[1,1]]
-        self.bumps  = [[0,0],[1,1]]
         for col in range(self.n**2):
             r, c = col%self.n, col//self.n 
             if self.creaks[r][c] == 1 and self.bumps[r][c] == 1: # light light
