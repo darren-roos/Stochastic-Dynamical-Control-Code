@@ -1,15 +1,18 @@
-import random, numpy, HMM
+import random, numpy
+from . import HMM
 
 class House:
     def __init__(self, n):
         self.n = n
-        self.creaks = numpy.random.randint(0, 2, size = (n,n))
-        self.bumps = numpy.random.randint(0, 2, size = (n,n))
+        #self.creaks = numpy.random.randint(0, 2, size = (n,n))
+        #self.bumps = numpy.random.randint(0, 2, size = (n,n))
+        self.creaks = [[0,1],[1,0]]
+        self.bumps = [[1,0],[1,0]]
         self.burglar = int(random.random()*self.n)
 
     def createHMM(self):
-        tp = numpy.zeros(self.n**2, self.n**2)
-        ep = numpy.zeros(4, self.n**2)
+        tp = numpy.zeros([self.n**2, self.n**2])
+        ep = numpy.zeros([4, self.n**2])
         # Transmission probability tables
         for col in range(self.n**2):
             legalMoves = self.getLegalMoves(col)
@@ -64,4 +67,3 @@ class House:
         # Move the burglar
         moves = self.getLegalMoves(self.burglar)
         self.burglar = moves[int(random.random()*len(moves))]
-

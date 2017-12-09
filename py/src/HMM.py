@@ -68,7 +68,7 @@ class HMM:
 
         ## Find sequence of states using mu
         mlss = numpy.zeros([ne], dtype=numpy.int)
-        mlss[1] = self.arg_viterbi_init(initial, evidence[1], mu[:,1])
+        mlss[0] = self.arg_viterbi_init(initial, evidence[0], mu[:,0])
 
         for ke in range(1,ne): # find the most likely sequence of states
             mlss[ke] = self.arg_viterbi(evidence[ke], mu[:,ke], mlss[ke-1])
