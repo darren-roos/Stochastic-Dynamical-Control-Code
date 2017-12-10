@@ -40,7 +40,7 @@ class HMM:
     def smooth(self, initial, evidence, timeLocation):
         # Forwards-Backwards algorithm. Note that it is required to split the evidence
         # accordingly.
-        forwardEvidence = evidence[0:timeLocation]
+        forwardEvidence = evidence[0:timeLocation+1]
         backwardEvidence = evidence[timeLocation:]
 
         alpha = self.forward(initial, forwardEvidence)[:, -1]

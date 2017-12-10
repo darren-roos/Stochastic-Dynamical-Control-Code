@@ -4,11 +4,13 @@ from . import HMM
 class House:
     def __init__(self, n):
         self.n = n
-        #self.creaks = numpy.random.randint(0, 2, size = (n,n))
-        #self.bumps = numpy.random.randint(0, 2, size = (n,n))
-        self.creaks = [[0,1],[1,0]]
-        self.bumps = [[1,0],[1,0]]
+        self.creaks = numpy.random.randint(0, 2, size = (n,n))
+        self.bumps = numpy.random.randint(0, 2, size = (n,n))
+        #self.creaks = [[0,1],[1,0]]
+        #self.bumps = [[1,0],[1,0]]
         self.burglar = int(random.random()*self.n)
+        self.floor = numpy.zeros([n,n])
+        self.floor[self.burglar%n][self.burglar//n] = 1
 
     def createHMM(self):
         tp = numpy.zeros([self.n**2, self.n**2])
@@ -66,4 +68,9 @@ class House:
     def move(self):
         # Move the burglar
         moves = self.getLegalMoves(self.burglar)
+        self.floor[self.burglar%self.n][self.burglar//self.n] = 0
         self.burglar = moves[int(random.random()*len(moves))]
+        self.floor[self.burglar%self.n][self.burglar//self.n] = 1
+
+    def getLocation(self):
+        return self.burglar
