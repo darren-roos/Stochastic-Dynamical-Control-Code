@@ -6,11 +6,10 @@ class House:
         self.n = n
         self.creaks = numpy.random.randint(0, 2, size = (n,n))
         self.bumps = numpy.random.randint(0, 2, size = (n,n))
-        #self.creaks = [[0,1],[1,0]]
-        #self.bumps = [[1,0],[1,0]]
         self.burglar = int(random.random()*self.n)
+        self.burglar = 15
         self.floor = numpy.zeros([n,n])
-        self.floor[self.burglar%n][self.burglar//n] = 1
+        self.floor[self.burglar//n][self.burglar%n] = 1
 
     def createHMM(self):
         tp = numpy.zeros([self.n**2, self.n**2])
@@ -37,7 +36,7 @@ class House:
         # Emission 3: no creak but a bump
         # Emission 4: neither a creak nor a bump
         for col in range(self.n**2):
-            r, c = col%self.n, col//self.n 
+            r, c = col//self.n, col%self.n 
             if self.creaks[r][c] == 1 and self.bumps[r][c] == 1: # light light
                 ep[0][col], ep[1][col], ep[2][col], ep[3][col] = [cl*bl, cl*nbl, ncl*bl, ncl*nbl]
             elif self.creaks[r][c] == 1 and self.bumps[r][c] == 0: # light dark
@@ -68,9 +67,9 @@ class House:
     def move(self):
         # Move the burglar
         moves = self.getLegalMoves(self.burglar)
-        self.floor[self.burglar%self.n][self.burglar//self.n] = 0
+        self.floor[self.burglar//self.n][self.burglar%self.n] = 0
         self.burglar = moves[int(random.random()*len(moves))]
-        self.floor[self.burglar%self.n][self.burglar//self.n] = 1
+        self.floor[self.burglar//self.n][self.burglar%self.n] = 1
 
     def getLocation(self):
         return self.burglar

@@ -28,7 +28,8 @@ noises = numpy.zeros([2,2,T])
 # initial = normalise(rand(n*n)) # no idea where the burglar is - not good
 initial = numpy.zeros([n*n]) # know the burglar is near the entrance of the house
 # initial[1:2*n] = 1.0/(2.*n) # two column initial guess
-initial[:n] = 1/n # one column initial guess
+initial[::n] = 1/n # one column initial guess
+
 
 # Measurement and actual movements
 for t in range(T):
@@ -55,7 +56,7 @@ for k in range( len(observations)):
     fbs[:, k] = hmm.smooth(initial, observations, k)
 
 # Viterbi
-vtb = hmm.viterbi(initial, observations)
+vtb = hmm.viterbi_dp(initial, observations)
 mlmove = numpy.zeros([n,n,T]) # construct floor matrices showing the viterbi path
 for k in range( len(observations)):
     temp = numpy.zeros([n,n])
@@ -64,7 +65,7 @@ for k in range( len(observations)):
 
 # Prediction
 predmove = numpy.zeros([n, n, T])
-predmove[:,:,1] = numpy.reshape(initial, [n, n]) # first time step is just the prior
+predmove[:,:,0] = numpy.reshape(initial, [n, n]) # first time step is just the prior
 for k in range(1,T):
     pstate, _= hmm.prediction(initial, observations[:k])
     predmove[:,:, k] = numpy.round(numpy.reshape(pstate, [n, n]), 2) # round to make predictions stand out more
@@ -77,7 +78,7 @@ plt.figure(1) # Inference - no prediction
 for t in range(T):
     plt.subplot(6, T, t+1)
     plt.imshow(noises[:,:, t], cmap="Greys", interpolation="nearest", vmin=0.0, vmax=1.0)
-    plt.title("t={0}".format(t),fontsize=fs)
+    plt.title("t={0}".format(t+1),fontsize=fs)
     if t==0:
         plt.ylabel("Noises", fontsize=fs)
     plt.tick_params(axis="both", which="both", bottom="off", top="off", left="off", right="off", labelbottom="off", labelleft="off")

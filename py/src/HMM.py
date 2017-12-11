@@ -142,3 +142,32 @@ class HMM:
             pred_evidence[ke] = temp
 
         return pred_states, pred_evidence
+
+    def viterbi_dp(self, initial, evidence):
+        ns = len(self.tp) #number of states
+        ne = len(evidence) #number of observations
+        dp = numpy.zeros([ns, ne]) #matrix of most likely values per state
+        dp_ptr = numpy.zeros([ns, ne], dtype=numpy.int) #matrix of best previous state
+
+        dp[:,0] = initial*self.ep[evidence[0]]
+        v_max_end, s_max_end = -1, -1
+        for ke in range(1, ne):
+            for ks in range(ns):
+                v_max, s_max = -1, -1
+                for ks_prev in range(ns):
+                    v = self.tp[ks][ks_prev]*self.ep[evidence[ke]][ks]*dp[ks_prev][ke-1]
+                    if v>v_max:
+                        v_max = v
+                        s_max = ks_prev
+                dp[ks][ke] = v_max
+                dp_ptr[ks][ke] = s_max
+                if ke==ne-1 and v_max>v_max_end:
+                    v_max_end = v_max
+                    s_max_end = ks
+        
+        seq = numpy.zeros([ne], dtype=numpy.int)
+        ptr = s_max_end
+        for ke in range(ne-1, -1, -1):
+            seq[ke] = ptr
+            ptr = dp_ptr[ptr][ke]
+        return seq
