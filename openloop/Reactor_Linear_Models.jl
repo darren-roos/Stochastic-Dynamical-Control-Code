@@ -29,7 +29,7 @@ for dd=1:nDD # only loop through
   # Loop through the rest of time
   for t=2:N
       xs[:, t] = Reactor.run_reactor(xs[:, t-1], 0.0, h, cstr_model) # actual plant
-      linxs[:, t] = linsystems[k].A*linxs[:, t-1] #+ linsystems[k].B*0.0
+      linxs[:, t] = linsystems[k].A*linxs[:, t-1] + linsystems[k].B#*0.0
   end
 
   linxs = linxs .+ linsystems[k].b
