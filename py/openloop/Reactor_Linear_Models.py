@@ -27,15 +27,15 @@ for dd in range(nDD): # only loop through
     xs = numpy.zeros([2, N])
     linxs = numpy.zeros([2, N])
     xs[:,0] = initial_states
-    linxs[:,0] = (initial_states - linsystems[k].b)[0]
+    linxs[:,0] = initial_states - linsystems[k].b
 
     # Loop through the rest of time
     for t in range(1, N):
         xs[:, t] = params.cstr_model.run_reactor(xs[:, t-1], 0.0, params.h) # actual plant
-        linxs[:, t] = (linsystems[k].A*linxs[:, t-1] + linsystems[k].B*0.0)[0]
+        linxs[:, t] = numpy.matmul(linsystems[k].A, linxs[:, t-1]) #+ linsystems[k].B*0.0
 
     for i in range(len(linxs)):
-        linxs[:,i] = (linxs[:,i] + linsystems[k].b)[0]
+        linxs[:,i] = linxs[:,i] + linsystems[k].b
 
     plt.subplot(nDD, 1, dd+1)
     x1, = plt.plot(xs[0,:][:], xs[1,:][:], "k", linewidth=3)
