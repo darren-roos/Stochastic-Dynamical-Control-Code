@@ -8,7 +8,7 @@ yspace = [250, 650]
 linsystems = Reactor.getLinearSystems_randomly(0, xspace, yspace, h, cstr_model)
 
 
-rc("font", family="serif", serif="Computer Modern", size=32)
+rc("font", family="serif", serif="Computer Modern", size=12)
 rc("text", usetex=true)
 figure(1)
 k=3 # set which operating point to use
@@ -29,7 +29,7 @@ for dd=1:nDD # only loop through
   # Loop through the rest of time
   for t=2:N
       xs[:, t] = Reactor.run_reactor(xs[:, t-1], 0.0, h, cstr_model) # actual plant
-      linxs[:, t] = linsystems[k].A*linxs[:, t-1] + linsystems[k].B*0.0
+      linxs[:, t] = linsystems[k].A*linxs[:, t-1] #+ linsystems[k].B*0.0
   end
 
   linxs = linxs .+ linsystems[k].b
