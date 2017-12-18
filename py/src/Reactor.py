@@ -75,16 +75,15 @@ class Reactor:
         # Returns the linearised coefficients of the Runge Kutta method
         # given a linearisation point.
         # To solve use x(k+1) =  Ax(k) + Bu(k)
-
         B11 = 0.0
         B21 = 1.0/(self.rho*self.V*self.Cp)
         B = [B11, B21]
         A = self.jacobian(linpoint)
         F0 = self.reactor_ode(linpoint, 0.0) # u = 0 because Bs account for the control term
-        D = A*linpoint
+        D = numpy.matmul(A, linpoint)
         # now we have x' = Ax + Bu + F0 - D = F(x)
         # now write ito deviation variables!
-        newb = A/(D-F0)
+        newb = numpy.matmul(numpy.linalg.inv(A), D-F0)
         # now we have xp' = Axp + Bu where x = xp + newb
 
         n = len(A)
