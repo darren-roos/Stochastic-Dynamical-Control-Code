@@ -88,8 +88,8 @@ class Reactor:
 
         n = len(A)
         # Uses the bilinear transform aka the Tustin transform... google it...
-        newA = (numpy.identity(n) + 0.5*h*A)*numpy.linalg.inv(numpy.identity(n) - 0.5*h*A)
-        newB = numpy.linalg.inv(A)*(newA-numpy.identity(n))*B
+        newA = numpy.matmul((numpy.identity(n) + 0.5*h*A), numpy.linalg.inv(numpy.identity(n) - 0.5*h*A))
+        newB = numpy.matmul(numpy.matmul(numpy.linalg.inv(A), (newA-numpy.identity(n))), B)
 
         return newA, newB, newb
 
