@@ -65,7 +65,7 @@ def plotTracking(ts, xs, ys, fmeans, us, obs):
     else:
         subplt = 3
     
-    mpl.rc("font", family="serif", serif="Computer Modern", size=32)
+    mpl.rc("font", family="serif", serif="Computer Modern", size=12)
     mpl.rc("text", usetex=True)
 
     skipmeas = int(len(ts)/80)
@@ -73,10 +73,10 @@ def plotTracking(ts, xs, ys, fmeans, us, obs):
     plt.figure()
     plt.subplt.plot(subplt,1,1)
     x1, = plt.plot(ts, xs[1,:], "k", linewidth=3)
-    if obs == 2: # plt.plot second measurement
-        y2, = plt.plot(ts[::skipmeas], ys[1, ::skipmeas][:], "kx", markersize=5, markeredgewidth=1)
+    if obs == 1: # plt.plot second measurement
+        y2, = plt.plot(ts[::skipmeas], ys[0][::skipmeas], "kx", markersize=5, markeredgewidth=1)
     
-    k1, = plt.plot(ts[::skipmean], fmeans[1, ::skipmean], "bx", markersize=5, markeredgewidth = 2)
+    k1, = plt.plot(ts[::skipmean], fmeans[0][::skipmean], "bx", markersize=5, markeredgewidth = 2)
     plt.ylabel(r"C$_A$ [kmol.m$^{-3}$]")
     plt.locator_params(nbins=4)
     legend([x1],["Underlying model"], loc="best")
@@ -84,13 +84,13 @@ def plotTracking(ts, xs, ys, fmeans, us, obs):
     # ylim([0, 1])
 
     plt.subplt.plot(subplt,1,2)
-    x2, = plt.plot(ts, xs[2,:], "k", linewidth=3)
-    if obs == 1:
+    x2, = plt.plot(ts, xs[1,:], "k", linewidth=3)
+    if obs == 0:
         y2, = plt.plot(ts[::skipmeas], ys[::skipmeas], "kx", markersize=5, markeredgewidth=1)
     else:
-        y2, = plt.plot(ts[::skipmeas], ys[2, ::skipmeas][:], "kx", markersize=5, markeredgewidth=1)
+        y2, = plt.plot(ts[::skipmeas], ys[1][::skipmeas][:], "kx", markersize=5, markeredgewidth=1)
     
-    k2, = plt.plot(ts[::skipmean], fmeans[2, ::skipmean], "bx", markersize=5, markeredgewidth = 2)
+    k2, = plt.plot(ts[::skipmean], fmeans[1][::skipmean], "bx", markersize=5, markeredgewidth = 2)
     plt.ylabel(r"T$_R$ [K]")
     plt.locator_params(nbins=4)
     legend([k2, y2],["Filtered mean", "Observations"], loc="best")
@@ -106,32 +106,33 @@ def plotTracking(ts, xs, ys, fmeans, us, obs):
     plt.xlabel("Time [min]")
     
 
-"""
-def plotStateSpaceSwitch(linsystems, xs)
-  mpl.rc("font", family="serif", serif="Computer Modern", size=32)
-  mpl.rc("text", usetex=True)
-  plt.figure() # Model and state space
-  for k=1:len(linsystems)
-    plt.plot(linsystems[k].op[1],linsystems[k].op[2],"kx",markersize=5, markeredgewidth=1)
-  annotate(latexstring("M_",k),
-        xy=[linsystems[k].op[1],linsystems[k].op[2]],
-        xytext=[linsystems[k].op[1],linsystems[k].op[2]],
-        fontsize=22.0,
-        ha="center",
-        va="bottom")
-  end
-  plt.plot(xs[1,:][:], xs[2,:][:], "k", linewidth=3)
-  plt.plot(xs[1,1], xs[2,1], "ko", markersize=10, markeredgewidth = 4)
-  plt.plot(xs[1,end], xs[2,end], "kx", markersize=10, markeredgewidth = 4)
-  plt.xlim([-0.1, 1.1])
-  plt.xlabel(r"C$_A$ [kmol.m$^{-3}$]")
-  plt.ylabel(r"T$_R$ [K]")
-end
 
+def plotStateSpaceSwitch(linsystems, xs):
+    mpl.rc("font", family="serif", serif="Computer Modern", size=12)
+    mpl.rc("text", usetex=True)
+    plt.figure() # Model and state space
+    for k in range(len(linsystems)):
+        plt.plot(linsystems[k].op[0],linsystems[k].op[1],"kx",markersize=5, markeredgewidth=1)
+        annotate(latexstring("M_",k),
+            xy=[linsystems[k].op[0],linsystems[k].op[1]],
+            xytext=[linsystems[k].op[0],linsystems[k].op[1]],
+            fontsize=12.0,
+            ha="center",
+            va="bottom")
+        
+    plt.plot(xs[0], xs[1], "k", linewidth=3)
+    plt.plot(xs[0][0], xs[1][0], "ko", markersize=10, markeredgewidth = 4)
+    plt.plot(xs[0][-1], xs[1][-1], "kx", markersize=10, markeredgewidth = 4)
+    plt.xlim([-0.1, 1.1])
+    plt.xlabel(r"C$_A$ [kmol.m$^{-3}$]")
+    plt.ylabel(r"T$_R$ [K]")
+    
+
+"""
 def plotSwitchSelection(numSwitches, strack, ts, cbaron)
 
   plt.figure() # Model selection
-  mpl.rc("font", family="serif", serif="Computer Modern", size=32)
+  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
   mpl.rc("text", usetex=True)
   axes = Array(Any, numSwitches)
   im = 0
@@ -166,7 +167,7 @@ end
 
 def plotEllipses(ts, xs, fmeans, fcovars, fname, legloc)
 
-  mpl.rc("font", family="serif", serif="Computer Modern", size=32)
+  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
   mpl.rc("text", usetex=True)
   N = len(ts)
   skip = int(len(ts)/40)
@@ -188,7 +189,7 @@ end
 
 def plotEllipses(ts, xs, fmeans, fcovars, fname, line, sp, nf, sigma, pick, legloc)
 
-  mpl.rc("font", family="serif", serif="Computer Modern", size=32)
+  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
   mpl.rc("text", usetex=True)
   N = len(ts)
   skip = int(len(ts)/40)
@@ -238,7 +239,7 @@ def plotEllipseComp(f1means, f1covars, f2means, f2covars, xs, ts, sigma=4.605)
   N = len(ts)
   skip = int(len(ts)/30)
   plt.figure()
-  mpl.rc("font", family="serif", serif="Computer Modern", size=32)
+  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
   mpl.rc("text", usetex=True)
   x1, = plt.plot(xs[1,:][:], xs[2,:][:], "k",linewidth=3)
   f1, = plt.plot(f1means[1, 1:skip:end][:], f1means[2, 1:skip:end][:], "yx", markersize=5, markeredgewidth = 2)
@@ -268,7 +269,7 @@ def plotTrackingBreak(ts, xs, xsb, ys, fmeans, obs)
   tend = ts[end]
   skipm = int(len(ts)/80)
   plt.figure() # plt.plot filtered results
-  mpl.rc("font", family="serif", serif="Computer Modern", size=32)
+  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
   mpl.rc("text", usetex=True)
   plt.subplt.plot(2,1,1)
   x1, = plt.plot(ts, xs[1,:], "k", linewidth=3)
@@ -303,7 +304,7 @@ def plotTrackingTwoFilters(ts, xs, ys, f1means, f2means)
   skip = int(len(ts)/40)
   tend = ts[end]
   plt.figure() # plt.plot filtered results
-  mpl.rc("font", family="serif", serif="Computer Modern", size=32)
+  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
   mpl.rc("text", usetex=True)
   plt.subplt.plot(2,1,1)
   x1, = plt.plot(ts, xs[1,:], "k", linewidth=3)
@@ -325,7 +326,7 @@ def plotTrackingTwoFilters(ts, xs, ys, f1means, f2means)
 end
 
 def plotKLdiv(ts, kldiv, basediv, unidiv, logged)
-  mpl.rc("font", family="serif", serif="Computer Modern", size=32)
+  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
   mpl.rc("text", usetex=True)
 
   plt.figure()
@@ -413,7 +414,7 @@ def checkConstraint(ts, xs, line)
   print("Minimum Negative Clearance: ", minneg)
 
   plt.figure()
-  mpl.rc("font", family="serif", size=32)
+  mpl.rc("font", family="serif", size=12)
   mpl.rc("text", usetex=True)
 
   plt.plot(ts, zeros(N), "r", linewidth=1)
