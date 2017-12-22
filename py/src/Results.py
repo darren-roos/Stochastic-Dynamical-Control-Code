@@ -1,7 +1,5 @@
 # plt.plotting and results analysis module
-import matplotlib as mpl, matplotlib.pyplot as plt
-
-#using Ellipse
+import matplotlib as mpl, matplotlib.pyplot as plt, Ellipse
 
 def plotTracking(ts, xs, ys, fmeans, us, obs, setpoint):
 
@@ -164,29 +162,30 @@ def plotSwitchSelection(numSwitches, strack, ts, cbaron):
     
     plt.xlabel("Time [min]")
 
+
+def plotEllipses(ts, xs, fmeans, fcovars, fname, legloc):
+
+    mpl.rc("font", family="serif", serif="Computer Modern", size=12)
+    mpl.rc("text", usetex=True)
+    N = len(ts)
+    skip = int(len(ts)/40)
+    plt.figure()
+    b1 = 0.0
+    for k in range(N):
+        p1, p2 = Ellipse.ellipse(fmeans[:,k], fcovars[:,:, k])
+        # b1, = plt.plot(p1, p2, "b")
+        b1, = plt.fill(p1, p2, "b", edgecolor="none")
+    
+    x1, = plt.plot(xs[0,:], xs[1,:], "k",linewidth=3)
+    f1, = plt.plot(fmeans[0][::skip], fmeans[1][::skip], "mx", markersize=5, markeredgewidth = 2)
+    plt.plot(xs[0,0], xs[1,0], "ko", markersize=10, markeredgewidth = 4)
+    plt.plot(xs[0,-1], xs[1,-1], "kx", markersize=10, markeredgewidth = 4)
+    plt.ylabel(r"T$_R$ [K]")
+    plt.xlabel(r"C$_A$ [kmol.m$^{-3}$]")
+    plt.legend([x1,f1, b1],["Underlying model","Filtered mean", r"90$\%$ Confidence region"], loc=legloc)
+    
+
 """
-def plotEllipses(ts, xs, fmeans, fcovars, fname, legloc)
-
-  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
-  mpl.rc("text", usetex=True)
-  N = len(ts)
-  skip = int(len(ts)/40)
-  plt.figure()
-  b1 = 0.0
-  for k=1:N
-    p1, p2 = Ellipse.ellipse(fmeans[:,k], fcovars[:,:, k])
-    # b1, = plt.plot(p1, p2, "b")
-    b1, = fill(p1, p2, "b", edgecolor="none")
-  end
-  x1, = plt.plot(xs[1,:][:], xs[2,:][:], "k",linewidth=3)
-  f1, = plt.plot(fmeans[1, 1:skip:end][:], fmeans[2, 1:skip:end][:], "mx", markersize=5, markeredgewidth = 2)
-  plt.plot(xs[1,1], xs[2,1], "ko", markersize=10, markeredgewidth = 4)
-  plt.plot(xs[1,end], xs[2,end], "kx", markersize=10, markeredgewidth = 4)
-  plt.ylabel(r"T$_R$ [K]")
-  plt.xlabel(r"C$_A$ [kmol.m$^{-3}$]")
-  legend([x1,f1, b1],["Underlying model","Filtered mean", r"90$\%$ Confidence region"], loc=legloc)
-end
-
 def plotEllipses(ts, xs, fmeans, fcovars, fname, line, sp, nf, sigma, pick, legloc)
 
   mpl.rc("font", family="serif", serif="Computer Modern", size=12)
