@@ -128,43 +128,43 @@ def plotStateSpaceSwitch(linsystems, xs):
     plt.ylabel(r"T$_R$ [K]")
     
 
+
+def plotSwitchSelection(numSwitches, strack, ts, cbaron):
+
+    plt.figure() # Model selection
+    mpl.rc("font", family="serif", serif="Computer Modern", size=12)
+    mpl.rc("text", usetex=True)
+    axes = [None]*numSwitches
+    im = 0
+    width = 500
+    for k in range(numSwitches):
+        ax = plt.subplot(numSwitches, 1, k)
+        axes[k] = ax
+        if cbaron:
+            im = plt.imshow(repeat(strack[k,:], outer=[width, 1]), cmap="cubehelix_r",vmin=0.0, vmax=1.0, interpolation="nearest", aspect="auto")
+        else:
+            im = plt.imshow(repeat(strack[k,:], outer=[width, 1]), cmap="binary",vmin=0.0, vmax=1.0, interpolation="nearest", aspect="auto")
+        
+        plt.tick_params(axis="y", which="both",left="off",right="off", labelleft = "off")
+        plt.tick_params(axis="x", which="both",bottom="off", labelbottom = "off")
+        plt.ylabel(latexstring("M_",k))
+    
+
+    plt.tick_params(axis="x", labelbottom = "on")
+    tempts = range(0, len(ts), int(len(ts)/10.0))
+    temp = [None]*len(tempts)
+    for lat in range(len(tempts)):
+        temp[lat] = latexstring(ts[tempts[lat]])
+    
+
+    plt.xticks(tempts, temp)
+
+    if cbaron == True:
+        plt.colorbar(im, ax=axes)
+    
+    plt.xlabel("Time [min]")
+
 """
-def plotSwitchSelection(numSwitches, strack, ts, cbaron)
-
-  plt.figure() # Model selection
-  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
-  mpl.rc("text", usetex=True)
-  axes = Array(Any, numSwitches)
-  im = 0
-  width = 500
-  for k=1:numSwitches
-    ax = plt.subplt.plot(numSwitches, 1, k)
-    axes[k] = ax
-    if cbaron
-      im = imshow(repeat(strack[k,:], outer=[width, 1]), cmap="cubehelix_r",vmin=0.0, vmax=1.0, interpolation="nearest", aspect="auto")
-    else
-      im = imshow(repeat(strack[k,:], outer=[width, 1]), cmap="binary",vmin=0.0, vmax=1.0, interpolation="nearest", aspect="auto")
-    end
-    tick_params(axis="y", which="both",left="off",right="off", labelleft = "off")
-    tick_params(axis="x", which="both",bottom="off", labelbottom = "off")
-    plt.ylabel(latexstring("M_",k))
-  end
-
-  tick_params(axis="x", labelbottom = "on")
-  tempts = [1:int(len(ts)/10.0):len(ts)]
-  temp = Array(String, len(tempts))
-  for lat=1:len(tempts)
-    temp[lat] = latexstring(ts[tempts[lat]])
-  end
-
-  xticks(tempts, temp)
-
-  if cbaron == True
-    colorbar(im, ax=axes)
-  end
-  plt.xlabel("Time [min]")
-end
-
 def plotEllipses(ts, xs, fmeans, fcovars, fname, legloc)
 
   mpl.rc("font", family="serif", serif="Computer Modern", size=12)
