@@ -53,7 +53,7 @@ class llds:
         kalmanGain = pvar*numpy.transpose(self.C)*numpy.linalg.inv(self.C*pvar*numpy.transpose(self.C) + self.R)
         ypred = self.C*pmean #predicted measurement
         updatedMean = pmean + kalmanGain*(ymeas - ypred)
-        rows, cols = len(pvar)
+        rows, cols = numpy.shape(pvar)
         updatedVar = (numpy.eye(rows) - kalmanGain*self.C)*pvar
         return updatedMean, updatedVar
         
@@ -82,31 +82,31 @@ class llds:
 
         return smoothedmeans, smoothedvars
         
-"""
+
     def predict_visible(self, kmean, kcovar, us):
-    # Predict the visible states n steps into the future given the controller action.
-    # Note: us[t] predicts xs[t+1]
+        # Predict the visible states n steps into the future given the controller action.
+        # Note: us[t] predicts xs[t+1]
 
-    rows, = len(kmean)
-    n, = len(us)
-    predicted_means = numpy.zeros(rows, n)
-    predicted_covars = numpy.zeros(rows, rows, n)
+        rows = len(kmean)
+        n = len(us)
+        predicted_means = numpy.zeros([rows, n])
+        predicted_covars = numpy.zeros([rows, rows, n])
 
-    predicted_means[:, :], predicted_covars[:, :, :] = predict_hidden(kmean, kcovar, us, self)
+        predicted_means, predicted_covars = predict_hidden(kmean, kcovar, us, self)
 
-    rows, = len(self.R) # actually just the standard deviation
-    predicted_vis_means = numpy.zeros(rows, n)
-    predicted_vis_covars = numpy.zeros(rows, n)
+        rows = len(self.R) # actually just the standard deviation
+        predicted_vis_means = numpy.zeros(rows, n)
+        predicted_vis_covars = numpy.zeros(rows, n)
 
-    for k=1:n # convert the hidden state to the observed state
-    predicted_vis_means[:, k] = self.C*predicted_means[:,k]
+        for k in range(n): # convert the hidden state to the observed state
+            predicted_vis_means[:, k] = self.C*predicted_means[:,k]
 
-    predicted_vis_covars[:, k] = self.R + self.C*predicted_covars[:, :, k]*numpy.transpose(self.C)
-    end
+            predicted_vis_covars[:, k] = self.R + self.C*predicted_covars[:, :, k]*numpy.transpose(self.C)
+        
 
-    return predicted_vis_means, predicted_vis_covars
-    end
-
+        return predicted_vis_means, predicted_vis_covars
+        
+"""
     def predict_hidden(self, kmean, kcovar, us):
     # Predict the hidden states n steps into the future given the controller action.
     # Note: us[t] predicts xs[t+1]
