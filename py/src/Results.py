@@ -299,34 +299,35 @@ def plotTrackingBreak(ts, xs, xsb, ys, fmeans, obs):
     plt.xlim([0, tend])
     
 
-"""
+
 def plotTrackingTwoFilters(ts, xs, ys, f1means, f2means):
 
-  skipm = int(len(ts)/80)
-  skip = int(len(ts)/40)
-  tend = ts[end]
-  plt.figure() # plt.plot filtered results
-  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
-  mpl.rc("text", usetex=True)
-  plt.subplt.plot(2,1,1)
-  x1, = plt.plot(ts, xs[1,:], "k", linewidth=3)
-  k1, = plt.plot(ts[::skip], f1means[1,::skip], "rx", markersize=5, markeredgewidth=2)
-  y2, = plt.plot(ts[::skipm], ys[1, ::skipm], "kx", markersize=5, markeredgewidth=1)
-  k12, = plt.plot(ts[::skip], f2means[1, ::skip], "bx", markersize=5, markeredgewidth=2)
-  plt.ylabel(r"C$_A$ [kmol.m$^{-3}$]")
-  legend([x1, k1],["Underlying model","Particle filter"], loc="best", ncol=2)
-  plt.xlim([0, tend])
-  plt.subplt.plot(2,1,2)
-  x2, = plt.plot(ts, xs[2,:], "k", linewidth=3)
-  y2, = plt.plot(ts[::skipm], ys[2, ::skipm], "kx", markersize=5, markeredgewidth=1)
-  k2, = plt.plot(ts[::skip], f1means[2,::skip], "rx", markersize=5, markeredgewidth=2)
-  k22, = plt.plot(ts[::skip], f2means[2, ::skip], "bx", markersize=5, markeredgewidth=2)
-  plt.ylabel(r"T$_R$ [K]")
-  plt.xlabel("Time [min]")
-  legend([y2, k22],["Observations", "Kalman filter"], loc="best", ncol=2)
-  plt.xlim([0, tend])
-end
+    skipm = int(len(ts)/80)
+    skip = int(len(ts)/40)
+    tend = ts[end]
+    plt.figure() # plt.plot filtered results
+    mpl.rc("font", family="serif", serif="Computer Modern", size=12)
+    mpl.rc("text", usetex=True)
+    plt.subplt.plot(2,1,1)
+    x1, = plt.plot(ts, xs[0,:], "k", linewidth=3)
+    k1, = plt.plot(ts[::skip], f1means[0][::skip], "rx", markersize=5, markeredgewidth=2)
+    y2, = plt.plot(ts[::skipm], ys[0][::skipm], "kx", markersize=5, markeredgewidth=1)
+    k12, = plt.plot(ts[::skip], f2means[0][::skip], "bx", markersize=5, markeredgewidth=2)
+    plt.ylabel(r"C$_A$ [kmol.m$^{-3}$]")
+    plt.legend([x1, k1],["Underlying model","Particle filter"], loc="best", ncol=2)
+    plt.xlim([0, tend])
+    plt.subplt.plot(2,1,2)
+    x2, = plt.plot(ts, xs[1,:], "k", linewidth=3)
+    y2, = plt.plot(ts[::skipm], ys[1][::skipm], "kx", markersize=5, markeredgewidth=1)
+    k2, = plt.plot(ts[::skip], f1means[1][::skip], "rx", markersize=5, markeredgewidth=2)
+    k22, = plt.plot(ts[::skip], f2means[1][::skip], "bx", markersize=5, markeredgewidth=2)
+    plt.ylabel(r"T$_R$ [K]")
+    plt.xlabel("Time [min]")
+    legend([y2, k22],["Observations", "Kalman filter"], loc="best", ncol=2)
+    plt.xlim([0, tend])
+    
 
+"""
 def plotKLdiv(ts, kldiv, basediv, unidiv, logged):
   mpl.rc("font", family="serif", serif="Computer Modern", size=12)
   mpl.rc("text", usetex=True)
