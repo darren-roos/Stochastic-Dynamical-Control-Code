@@ -185,54 +185,55 @@ def plotEllipses(ts, xs, fmeans, fcovars, fname, legloc):
     plt.legend([x1,f1, b1],["Underlying model","Filtered mean", r"90$\%$ Confidence region"], loc=legloc)
     
 
+
+def plotEllipses(ts, xs, fmeans, fcovars, fname, line, sp, nf, sigma, pick, legloc):
+
+    mpl.rc("font", family="serif", serif="Computer Modern", size=12)
+    mpl.rc("text", usetex=True)
+    N = len(ts)
+    skip = int(len(ts)/40)
+
+    if nf:
+        plt.figure() # only create a new plt.figure if required
+    b1 = 0.0
+    for k in range(N):
+        p1, p2 = Ellipse.ellipse(fmeans[:,k], fcovars[:,:, k], sigma)
+        # b1, = plt.plot(p1, p2, "b")
+        b1, = plt.fill(p1, p2, "b", edgecolor="none")
+    
+    x1, = plt.plot(xs[0], xs[1], "k",linewidth=3)
+    f1, = plt.plot(fmeans[0][::skip], fmeans[1][::skip], "mx", markersize=5, markeredgewidth = 2)
+    #plt.plot(xs[1, 1:skip:end][:], xs[2, 1:skip:end][:], "kx", markersize=5, markeredgewidth = 2)
+    plt.plot(xs[0,0], xs[1,0], "ko", markersize=10, markeredgewidth = 4)
+    plt.plot(xs[0,-1], xs[1,-1], "kx", markersize=10, markeredgewidth = 4)
+
+    # line = [b,c] => y + bx + c = 0
+    # line => y = - bx - c
+
+    lxs = range(-0.1, 1.1, 0.05)
+    lys = -line[0]*lxs - line[1]
+    plt.xlim([0.0, 1.0])
+    plt.ylim([min(xs[1,:]-10), max(xs[1, :]+10)])
+    plt.plot(lxs, lys, "r-")
+
+    plt.plot(sp[0], sp[1], "gx",markersize=8, markeredgewidth = 4)
+
+    plt.ylabel(r"T$_R$ [K]")
+    plt.xlabel(r"C$_A$ [kmol.m$^{-3}$]")
+    # conf = round((1.0 - exp(-sigma/2.0))*100.0, 3)
+    # temp = latexstring(conf,"\%", "Confidence~Region")
+    # legend([x1,f1, b1],[r"Underlying~Model",r"Filtered~Mean", temp], loc="best")
+    if pick==0:
+        legend([x1,f1, b1],["Underlying model","Filtered mean", r"90$\%$ Confidence region"], loc=legloc)
+    elif pick == 1:
+        legend([x1,f1, b1],["Underlying model","Filtered mean", r"99$\%$ Confidence region"], loc=legloc)
+    elif pick == 2:
+        legend([x1,f1, b1],["Underlying model","Filtered mean", r"99.9$\%$ Confidence region"], loc=legloc)
+    else:
+        legend([x1,f1, b1],["Underlying model","Filtered mean", r"99.99$\%$ Confidence region"], loc=legloc)
+
+
 """
-def plotEllipses(ts, xs, fmeans, fcovars, fname, line, sp, nf, sigma, pick, legloc)
-
-  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
-  mpl.rc("text", usetex=True)
-  N = len(ts)
-  skip = int(len(ts)/40)
-
-  nf && plt.figure() # only create a new plt.figure if required
-  b1 = 0.0
-  for k=1:N
-    p1, p2 = Ellipse.ellipse(fmeans[:,k], fcovars[:,:, k], sigma)
-    # b1, = plt.plot(p1, p2, "b")
-    b1, = fill(p1, p2, "b", edgecolor="none")
-  end
-  x1, = plt.plot(xs[1,:][:], xs[2,:][:], "k",linewidth=3)
-  f1, = plt.plot(fmeans[1, 1:skip:end][:], fmeans[2, 1:skip:end][:], "mx", markersize=5, markeredgewidth = 2)
-  #plt.plot(xs[1, 1:skip:end][:], xs[2, 1:skip:end][:], "kx", markersize=5, markeredgewidth = 2)
-  plt.plot(xs[1,1], xs[2,1], "ko", markersize=10, markeredgewidth = 4)
-  plt.plot(xs[1,end], xs[2,end], "kx", markersize=10, markeredgewidth = 4)
-
-  # line = [b,c] => y + bx + c = 0
-  # line => y = - bx - c
-
-  lxs = [-0.1:0.05:1.1]
-  lys = -line[1].*lxs .- line[2]
-  plt.xlim([0.0, 1.0])
-  ylim([minimum(xs[2,:]-10), maximum(xs[2, :]+10)])
-  plt.plot(lxs, lys, "r-")
-
-  plt.plot(sp[1], sp[2], "gx",markersize=8, markeredgewidth = 4)
-
-  plt.ylabel(r"T$_R$ [K]")
-  plt.xlabel(r"C$_A$ [kmol.m$^{-3}$]")
-  # conf = round((1.0 - exp(-sigma/2.0))*100.0, 3)
-  # temp = latexstring(conf,"\%", "Confidence~Region")
-  # legend([x1,f1, b1],[r"Underlying~Model",r"Filtered~Mean", temp], loc="best")
-  if pick==1
-    legend([x1,f1, b1],["Underlying model","Filtered mean", r"90$\%$ Confidence region"], loc=legloc)
-  elseif pick == 2
-    legend([x1,f1, b1],["Underlying model","Filtered mean", r"99$\%$ Confidence region"], loc=legloc)
-  elseif pick == 3
-    legend([x1,f1, b1],["Underlying model","Filtered mean", r"99.9$\%$ Confidence region"], loc=legloc)
-  else
-    legend([x1,f1, b1],["Underlying model","Filtered mean", r"99.99$\%$ Confidence region"], loc=legloc)
-  end
-end
-
 def plotEllipseComp(f1means, f1covars, f2means, f2covars, xs, ts, sigma=4.605)
 
   N = len(ts)
