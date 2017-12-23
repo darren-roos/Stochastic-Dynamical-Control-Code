@@ -26,14 +26,14 @@ class llds:
 
         return xnow,  ynow
         
-    """
-    def init_filter(initmean, initvar, ynow, self):
-    # Initialise the filter. No prediction step, only a measurement update step.
-    updatedMean , updatedVar  = step_update(initmean, initvar, ynow, self)
-    return updatedMean, updatedVar
-    end
-
-    def step_filter(prevmean, prevvar, uprev, ynow, self):
+    
+    def init_filter(self, initmean, initvar, ynow):
+        # Initialise the filter. No prediction step, only a measurement update step.
+        updatedMean , updatedVar  = step_update(initmean, initvar, ynow)
+        return updatedMean, updatedVar
+        
+"""
+    def step_filter(self, prevmean, prevvar, uprev, ynow):
     # Return the posterior over the current state given the observation and previous
     # filter result.
     pmean , pvar  = step_predict(prevmean, prevvar, uprev, self):
@@ -41,14 +41,14 @@ class llds:
     return updatedMean, updatedVar
     end
 
-    def step_predict(xprev, varprev, uprev, self):
+    def step_predict(self, xprev, varprev, uprev):
     # Return the one step ahead predicted mean and covariance.
     pmean = self.A*xprev + self.B*uprev
     pvar =  self.Q + self.A*varprev*transpose(self.A)
     return pmean, pvar
     end
 
-    def step_update(pmean, pvar, ymeas, self):
+    def step_update(self, pmean, pvar, ymeas):
     # Return the one step ahead measurement updated mean and covar.
     kalmanGain = pvar*transpose(self.C)*inv(self.C*pvar*transpose(self.C) + self.R)
     ypred = self.C*pmean #predicted measurement
@@ -58,7 +58,7 @@ class llds:
     return updatedMean, updatedVar
     end
 
-    def smooth(kmeans, kcovars, us, self):
+    def smooth(self, kmeans, kcovars, us):
     # Returns the smoothed means and covariances
     # Note, this is only for matrix entries!
     rows, cols = len(kmeans)
@@ -83,7 +83,7 @@ class llds:
     return smoothedmeans, smoothedvars
     end
 
-    def predict_visible(kmean, kcovar, us, self):
+    def predict_visible(self, kmean, kcovar, us):
     # Predict the visible states n steps into the future given the controller action.
     # Note: us[t] predicts xs[t+1]
 
@@ -107,7 +107,7 @@ class llds:
     return predicted_vis_means, predicted_vis_covars
     end
 
-    def predict_hidden(kmean, kcovar, us, self):
+    def predict_hidden(self, kmean, kcovar, us):
     # Predict the hidden states n steps into the future given the controller action.
     # Note: us[t] predicts xs[t+1]
 
