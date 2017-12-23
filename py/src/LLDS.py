@@ -32,15 +32,15 @@ class llds:
         updatedMean , updatedVar  = step_update(initmean, initvar, ynow)
         return updatedMean, updatedVar
         
-"""
-    def step_filter(self, prevmean, prevvar, uprev, ynow):
-    # Return the posterior over the current state given the observation and previous
-    # filter result.
-    pmean , pvar  = step_predict(prevmean, prevvar, uprev, self):
-    updatedMean , updatedVar  = step_update(pmean, pvar, ynow, self)
-    return updatedMean, updatedVar
-    end
 
+    def step_filter(self, prevmean, prevvar, uprev, ynow):
+        # Return the posterior over the current state given the observation and previous
+        # filter result.
+        pmean , pvar  = step_predict(prevmean, prevvar, uprev)
+        updatedMean , updatedVar  = step_update(pmean, pvar, ynow)
+        return updatedMean, updatedVar
+        
+"""
     def step_predict(self, xprev, varprev, uprev):
     # Return the one step ahead predicted mean and covariance.
     pmean = self.A*xprev + self.B*uprev
