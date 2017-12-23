@@ -327,26 +327,26 @@ def plotTrackingTwoFilters(ts, xs, ys, f1means, f2means):
     plt.xlim([0, tend])
     
 
-"""
+
 def plotKLdiv(ts, kldiv, basediv, unidiv, logged):
-  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
-  mpl.rc("text", usetex=True)
+    mpl.rc("font", family="serif", serif="Computer Modern", size=12)
+    mpl.rc("text", usetex=True)
 
-  plt.figure()
-  if logged
-    kl, = semilogy(ts, kldiv, "r", linewidth=3)
-    gd, = semilogy(ts, basediv, "b", linewidth=3)
-    ud, = semilogy(ts, unidiv, "g", linewidth=3)
-  else
-    kl, = plt.plot(ts, kldiv, "r", linewidth=3)
-    gd, = plt.plot(ts, basediv, "b", linewidth=3)
-    ud, = plt.plot(ts, unidiv, "g", linewidth=3)
-  end
-  plt.xlabel("Time [min]")
-  plt.ylabel("Divergence [Nats]")
-  legend([kl, gd, ud],["Approximation","Baseline", "Uniform"], loc="best")
-end
-
+    plt.figure()
+    if logged:
+        kl, = semilogy(ts, kldiv, "r", linewidth=3)
+        gd, = semilogy(ts, basediv, "b", linewidth=3)
+        ud, = semilogy(ts, unidiv, "g", linewidth=3)
+    else:
+        kl, = plt.plot(ts, kldiv, "r", linewidth=3)
+        gd, = plt.plot(ts, basediv, "b", linewidth=3)
+        ud, = plt.plot(ts, unidiv, "g", linewidth=3)
+    
+    plt.xlabel("Time [min]")
+    plt.ylabel("Divergence [Nats]")
+    legend([kl, gd, ud],["Approximation","Baseline", "Uniform"], loc="best")
+    
+"""
 def calcError(x, y::Array{Float64, 2}):
 
   r, N = size(x)
