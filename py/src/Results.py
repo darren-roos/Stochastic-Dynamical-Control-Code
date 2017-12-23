@@ -86,7 +86,7 @@ def plotTracking(ts, xs, ys, fmeans, us, obs):
     if obs == 0:
         y2, = plt.plot(ts[::skipmeas], ys[::skipmeas], "kx", markersize=5, markeredgewidth=1)
     else:
-        y2, = plt.plot(ts[::skipmeas], ys[1][::skipmeas][:], "kx", markersize=5, markeredgewidth=1)
+        y2, = plt.plot(ts[::skipmeas], ys[1][::skipmeas], "kx", markersize=5, markeredgewidth=1)
     
     k2, = plt.plot(ts[::skipmean], fmeans[1][::skipmean], "bx", markersize=5, markeredgewidth = 2)
     plt.ylabel(r"T$_R$ [K]")
@@ -203,7 +203,7 @@ def plotEllipses(ts, xs, fmeans, fcovars, fname, line, sp, nf, sigma, pick, legl
     
     x1, = plt.plot(xs[0], xs[1], "k",linewidth=3)
     f1, = plt.plot(fmeans[0][::skip], fmeans[1][::skip], "mx", markersize=5, markeredgewidth = 2)
-    #plt.plot(xs[1, 1:skip:end][:], xs[2, 1:skip:end][:], "kx", markersize=5, markeredgewidth = 2)
+    #plt.plot(xs[1, ::skip], xs[2, ::skip], "kx", markersize=5, markeredgewidth = 2)
     plt.plot(xs[0,0], xs[1,0], "ko", markersize=10, markeredgewidth = 4)
     plt.plot(xs[0,-1], xs[1,-1], "kx", markersize=10, markeredgewidth = 4)
 
@@ -233,36 +233,37 @@ def plotEllipses(ts, xs, fmeans, fcovars, fname, line, sp, nf, sigma, pick, legl
         legend([x1,f1, b1],["Underlying model","Filtered mean", r"99.99$\%$ Confidence region"], loc=legloc)
 
 
+
+def plotEllipseComp(f1means, f1covars, f2means, f2covars, xs, ts, sigma=4.605):
+
+    N = len(ts)
+    skip = int(len(ts)/30)
+    plt.figure()
+    mpl.rc("font", family="serif", serif="Computer Modern", size=12)
+    mpl.rc("text", usetex=True)
+    x1, = plt.plot(xs[0], xs[1], "k",linewidth=3)
+    f1, = plt.plot(f1means[0][::skip], f1means[1][::skip], "yx", markersize=5, markeredgewidth = 2)
+    f2, = plt.plot(f2means[0][::skip], f2means[1][::skip], "gx", markersize=5, markeredgewidth = 2)
+    b1 = 0.0
+    b2 = 0.0
+    for k in range(N):
+        p1, p2 = Ellipse.ellipse(f1means[:,k], f1covars[:,:, k], sigma)
+        # b1, = plt.plot(p1, p2, "r")
+        b1, = fill(p1, p2, "r", edgecolor="none")
+
+        p3, p4 = Ellipse.ellipse(f2means[:,k], f2covars[:,:, k], sigma)
+        # b2, = plt.plot(p3, p4, "b")
+        b2, = fill(p3, p4, "b", edgecolor="none")
+    
+
+    plt.plot(xs[0,0], xs[1,0], "ko", markersize=10, markeredgewidth = 4)
+    plt.plot(xs[0,-1], xs[1,-1], "kx", markersize=10, markeredgewidth = 4)
+    plt.ylabel(r"T$_R$ [K]")
+    plt.xlabel(r"C$_A$ [kmol.m$^{-3}$]")
+    legend([x1,f1,f2, b1, b2],["Underlying model","Particle filter","Kalman filter", r"PF 90$\%$ Confidence region", r"KF 90$\%$ Confidence region"], loc="best")
+
+
 """
-def plotEllipseComp(f1means, f1covars, f2means, f2covars, xs, ts, sigma=4.605)
-
-  N = len(ts)
-  skip = int(len(ts)/30)
-  plt.figure()
-  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
-  mpl.rc("text", usetex=True)
-  x1, = plt.plot(xs[1,:][:], xs[2,:][:], "k",linewidth=3)
-  f1, = plt.plot(f1means[1, 1:skip:end][:], f1means[2, 1:skip:end][:], "yx", markersize=5, markeredgewidth = 2)
-  f2, = plt.plot(f2means[1, 1:skip:end][:], f2means[2, 1:skip:end][:], "gx", markersize=5, markeredgewidth = 2)
-  b1 = 0.0
-  b2 = 0.0
-  for k=1:N
-    p1, p2 = Ellipse.ellipse(f1means[:,k], f1covars[:,:, k], sigma)
-    # b1, = plt.plot(p1, p2, "r")
-    b1, = fill(p1, p2, "r", edgecolor="none")
-
-    p3, p4 = Ellipse.ellipse(f2means[:,k], f2covars[:,:, k], sigma)
-    # b2, = plt.plot(p3, p4, "b")
-    b2, = fill(p3, p4, "b", edgecolor="none")
-  end
-
-  plt.plot(xs[1,1], xs[2,1], "ko", markersize=10, markeredgewidth = 4)
-  plt.plot(xs[1,end], xs[2,end], "kx", markersize=10, markeredgewidth = 4)
-  plt.ylabel(r"T$_R$ [K]")
-  plt.xlabel(r"C$_A$ [kmol.m$^{-3}$]")
-  legend([x1,f1,f2, b1, b2],["Underlying model","Particle filter","Kalman filter", r"PF 90$\%$ Confidence region", r"KF 90$\%$ Confidence region"], loc="best")
-end
-
 def plotTrackingBreak(ts, xs, xsb, ys, fmeans, obs)
 
   N = len(ts)
@@ -275,7 +276,7 @@ def plotTrackingBreak(ts, xs, xsb, ys, fmeans, obs)
   x1, = plt.plot(ts, xs[1,:], "k", linewidth=3)
   x1nf, = plt.plot(ts, xsb[1,:], "g--", linewidth=3)
   if obs == 2
-    y2, = plt.plot(ts[1:skipm:end], ys[1, 1:skipm:end][:], "kx", markersize=5, markeredgewidth=1)
+    y2, = plt.plot(ts[1:skipm:end], ys[1, 1:skipm:end], "kx", markersize=5, markeredgewidth=1)
   end
   k1, = plt.plot(ts, fmeans[1,:], "r--", linewidth=3)
   plt.ylabel(r"C$_A$ [kmol.m$^{-3}$]")
@@ -286,7 +287,7 @@ def plotTrackingBreak(ts, xs, xsb, ys, fmeans, obs)
   x2, = plt.plot(ts, xs[2,:], "k", linewidth=3)
   x2nf, = plt.plot(ts, xsb[2,:], "g--", linewidth=3)
   if obs == 2
-    y2, = plt.plot(ts[1:skipm:end], ys[2, 1:skipm:end][:], "kx", markersize=5, markeredgewidth=1)
+    y2, = plt.plot(ts[1:skipm:end], ys[2, 1:skipm:end], "kx", markersize=5, markeredgewidth=1)
   else
     y2, = plt.plot(ts[1:skipm:end], ys[1:skipm:end], "kx", markersize=5, markeredgewidth=1)
   end
@@ -308,17 +309,17 @@ def plotTrackingTwoFilters(ts, xs, ys, f1means, f2means)
   mpl.rc("text", usetex=True)
   plt.subplt.plot(2,1,1)
   x1, = plt.plot(ts, xs[1,:], "k", linewidth=3)
-  k1, = plt.plot(ts[1:skip:end], f1means[1,1:skip:end], "rx", markersize=5, markeredgewidth=2)
-  y2, = plt.plot(ts[1:skipm:end], ys[1, 1:skipm:end][:], "kx", markersize=5, markeredgewidth=1)
-  k12, = plt.plot(ts[1:skip:end], f2means[1, 1:skip:end], "bx", markersize=5, markeredgewidth=2)
+  k1, = plt.plot(ts[::skip], f1means[1,::skip], "rx", markersize=5, markeredgewidth=2)
+  y2, = plt.plot(ts[1:skipm:end], ys[1, 1:skipm:end], "kx", markersize=5, markeredgewidth=1)
+  k12, = plt.plot(ts[::skip], f2means[1, ::skip], "bx", markersize=5, markeredgewidth=2)
   plt.ylabel(r"C$_A$ [kmol.m$^{-3}$]")
   legend([x1, k1],["Underlying model","Particle filter"], loc="best", ncol=2)
   plt.xlim([0, tend])
   plt.subplt.plot(2,1,2)
   x2, = plt.plot(ts, xs[2,:], "k", linewidth=3)
-  y2, = plt.plot(ts[1:skipm:end], ys[2, 1:skipm:end][:], "kx", markersize=5, markeredgewidth=1)
-  k2, = plt.plot(ts[1:skip:end], f1means[2,1:skip:end], "rx", markersize=5, markeredgewidth=2)
-  k22, = plt.plot(ts[1:skip:end], f2means[2, 1:skip:end], "bx", markersize=5, markeredgewidth=2)
+  y2, = plt.plot(ts[1:skipm:end], ys[2, 1:skipm:end], "kx", markersize=5, markeredgewidth=1)
+  k2, = plt.plot(ts[::skip], f1means[2,::skip], "rx", markersize=5, markeredgewidth=2)
+  k22, = plt.plot(ts[::skip], f2means[2, ::skip], "bx", markersize=5, markeredgewidth=2)
   plt.ylabel(r"T$_R$ [K]")
   plt.xlabel("Time [min]")
   legend([y2, k22],["Observations", "Kalman filter"], loc="best", ncol=2)
