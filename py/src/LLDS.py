@@ -57,32 +57,32 @@ class llds:
         updatedVar = (numpy.eye(rows) - kalmanGain*self.C)*pvar
         return updatedMean, updatedVar
         
-"""
+
     def smooth(self, kmeans, kcovars, us):
-    # Returns the smoothed means and covariances
-    # Note, this is only for matrix entries!
-    rows, cols = len(kmeans)
-    smoothedmeans = numpy.zeros(rows, cols)
-    smoothedvars = numpy.zeros(rows, rows, cols)
-    smoothedmeans[:, end] = kmeans[:, end]
-    smoothedvars[:, :, end] = kcovars[:, :, end]
+        # Returns the smoothed means and covariances
+        # Note, this is only for matrix entries!
+        rows, cols = numpy.shape(kmeans)
+        smoothedmeans = numpy.zeros([rows, cols])
+        smoothedvars = numpy.zeros([rows, rows, cols])
+        smoothedmeans[:, -1] = kmeans[:, -1]
+        smoothedvars[:, :, -1] = kcovars[:, :, -1]
 
-    for t=cols-1:-1:2
-    Pt = self.A*kcovars[:, :, t]*numpy.transpose(self.A) + self.Q
-    Jt = kcovars[:, :, t]*numpy.transpose(self.A)*numpy.linalg.inv(Pt)
-    smoothedmeans[:, t] = kmeans[:, t] + Jt*(smoothedmeans[:, t+1] - self.A*kmeans[:, t] - self.B*us[:, t-1])
-    smoothedvars[:,:, t] = kcovars[:,:, t] + Jt*(smoothedvars[:,:, t+1] - Pt)*numpy.transpose(Jt)
-    end
+        for t in range(cols-2, 1, -1):
+            Pt = self.A*kcovars[:, :, t]*numpy.transpose(self.A) + self.Q
+            Jt = kcovars[:, :, t]*numpy.transpose(self.A)*numpy.linalg.inv(Pt)
+            smoothedmeans[:, t] = kmeans[:, t] + Jt*(smoothedmeans[:, t+1] - self.A*kmeans[:, t] - self.B*us[:, t-1])
+            smoothedvars[:,:, t] = kcovars[:,:, t] + Jt*(smoothedvars[:,:, t+1] - Pt)*numpy.transpose(Jt)
+            
 
-    Pt = self.A*kcovars[:, :, 1]*numpy.transpose(self.A) + self.Q
-    Jt = kcovars[:, :, 1]*numpy.transpose(self.A)*numpy.linalg.inv(Pt)
-    smoothedmeans[:, 1] = kmeans[:, 1] + Jt*(smoothedmeans[:, 2] - self.A*kmeans[:, 1]) # no control for the prior
-    smoothedvars[:,:, 1] = kcovars[:,:, 1] + Jt*(smoothedvars[:,:, 2] - Pt)*numpy.transpose(Jt)
+        Pt = self.A*kcovars[:, :, 0]*numpy.transpose(self.A) + self.Q
+        Jt = kcovars[:, :, 0]*numpy.transpose(self.A)*numpy.linalg.inv(Pt)
+        smoothedmeans[:, 0] = kmeans[:, 0] + Jt*(smoothedmeans[:, 1] - self.A*kmeans[:, 0]) # no control for the prior
+        smoothedvars[:,:, 0] = kcovars[:,:, 0] + Jt*(smoothedvars[:,:, 1] - Pt)*numpy.transpose(Jt)
 
 
-    return smoothedmeans, smoothedvars
-    end
-
+        return smoothedmeans, smoothedvars
+        
+"""
     def predict_visible(self, kmean, kcovar, us):
     # Predict the visible states n steps into the future given the controller action.
     # Note: us[t] predicts xs[t+1]
