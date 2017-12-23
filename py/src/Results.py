@@ -96,7 +96,7 @@ def plotTracking(ts, xs, ys, fmeans, us, obs):
     # ylim([minimum(xs[2,:]), maximum(xs[2,:])])
     if subplt == 3:
         plt.subplt.plot(subplt,1,3)
-        plt.plot(ts, (1.0/60.0)*us)
+        plt.plot(ts, (1/60.0)*us)
         plt.xlim([0, tend])
         plt.ylabel("Q [kW]")
     
@@ -139,9 +139,9 @@ def plotSwitchSelection(numSwitches, strack, ts, cbaron):
         ax = plt.subplot(numSwitches, 1, k)
         axes[k] = ax
         if cbaron:
-            im = plt.imshow(repeat(strack[k,:], outer=[width, 1]), cmap="cubehelix_r",vmin=0.0, vmax=1.0, interpolation="nearest", aspect="auto")
+            im = plt.imshow(repeat(strack[k,:], outer=[width, 1]), cmap="cubehelix_r",vmin=0.0, vmax=1, interpolation="nearest", aspect="auto")
         else:
-            im = plt.imshow(repeat(strack[k,:], outer=[width, 1]), cmap="binary",vmin=0.0, vmax=1.0, interpolation="nearest", aspect="auto")
+            im = plt.imshow(repeat(strack[k,:], outer=[width, 1]), cmap="binary",vmin=0.0, vmax=1, interpolation="nearest", aspect="auto")
         
         plt.tick_params(axis="y", which="both",left="off",right="off", labelleft = "off")
         plt.tick_params(axis="x", which="both",bottom="off", labelbottom = "off")
@@ -212,7 +212,7 @@ def plotEllipses(ts, xs, fmeans, fcovars, fname, line, sp, nf, sigma, pick, legl
 
     lxs = range(-0.1, 1.1, 0.05)
     lys = -line[0]*lxs - line[1]
-    plt.xlim([0.0, 1.0])
+    plt.xlim([0.0, 1])
     plt.ylim([min(xs[1,:]-10), max(xs[1, :]+10)])
     plt.plot(lxs, lys, "r-")
 
@@ -220,7 +220,7 @@ def plotEllipses(ts, xs, fmeans, fcovars, fname, line, sp, nf, sigma, pick, legl
 
     plt.ylabel(r"T$_R$ [K]")
     plt.xlabel(r"C$_A$ [kmol.m$^{-3}$]")
-    # conf = round((1.0 - exp(-sigma/2.0))*100.0, 3)
+    # conf = round((1 - exp(-sigma/2.0))*100.0, 3)
     # temp = latexstring(conf,"\%", "Confidence~Region")
     # legend([x1,f1, b1],[r"Underlying~Model",r"Filtered~Mean", temp], loc="best")
     if pick==0:
@@ -387,47 +387,48 @@ def calcEnergy(us, uss, h):
     print("Average Input (kW): ", avecost)
     return avecost
 
-"""
+
 def checkConstraint(ts, xs, line):
-  # line = [b,c] => y + bx + c = 0
-  # line => y = - bx - c
-  r, N = len(xs)
-  conmargin = zeros(N)
-  minneg = Inf
-  minpos = Inf
-  for k=1:N
-    temp = xs[2, k] + xs[1, k]*line[1] + line[2]
-    if temp < 0.0
-      conmargin[k] = -abs(temp)/sqrt(line[1]^2 + 1.0)
-      if minneg > abs(temp)/sqrt(line[1]^2 + 1.0)
-        minneg = abs(temp)/sqrt(line[1]^2 + 1.0)
-      end
-    else
-      conmargin[k] = abs(temp)/sqrt(line[1]^2 + 1.0)
-      if minpos > abs(temp)/sqrt(line[1]^2 + 1.0)
-        minpos = abs(temp)/sqrt(line[1]^2 + 1.0)
-      end
-    end
-  end
+    # line = [b,c] => y + bx + c = 0
+    # line => y = - bx - c
+    r, N = len(xs)
+    conmargin = numpy.zeros([N])
+    minneg = float("inf")
+    minpos = float("inf")
+    for k in range(N):
+        temp = xs[1, k] + xs[0, k]*line[0] + line[1]
+        if temp < 0:
+            conmargin[k] = -abs(temp)/numpy.sqrt(line[0]^2 + 1)
+            if minneg > abs(temp)/numpy.sqrt(line[0]^2 + 1):
+                minneg = abs(temp)/numpy.sqrt(line[0]^2 + 1)
+            
+        else:
+            conmargin[k] = abs(temp)/numpy.sqrt(line[0]^2 + 1)
+            if minpos > abs(temp)/numpy.sqrt(line[0]^2 + 1):
+                minpos = abs(temp)/numpy.sqrt(line[0]^2 + 1)
+            
+        
+    
 
 
-  print("Minimum Positive Clearance: ", minpos)
-  print("Minimum Negative Clearance: ", minneg)
+    print("Minimum Positive Clearance: ", minpos)
+    print("Minimum Negative Clearance: ", minneg)
 
-  plt.figure()
-  mpl.rc("font", family="serif", len=12)
-  mpl.rc("text", usetex=True)
+    plt.figure()
+    mpl.rc("font", family="serif", len=12)
+    mpl.rc("text", usetex=True)
 
-  plt.plot(ts, zeros(N), "r", linewidth=1)
-  plt.plot(ts, conmargin, "k", linewidth=3)
-  plt.xlabel(r"Time [min]")
-  plt.ylabel(r"Clearance")
-end
+    plt.plot(ts, numpy.zeros([N]), "r", linewidth=1)
+    plt.plot(ts, conmargin, "k", linewidth=3)
+    plt.xlabel(r"Time [min]")
+    plt.ylabel(r"Clearance")
+    
 
+"""
 def getMCRes!(xs, sigmas, line, mcdistmat, counter, h):
   # line = [b,c] => y + bx + c = 0
   # line => y = - bx - c
-  d = [line[1], 1.0]
+  d = [line[1], 1]
   r, N = len(xs)
   negdist = 0.0
   timeviolated = 0
