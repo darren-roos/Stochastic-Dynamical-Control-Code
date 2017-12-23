@@ -424,23 +424,23 @@ def checkConstraint(ts, xs, line):
     plt.ylabel(r"Clearance")
     
 
-"""
-def getMCRes!(xs, sigmas, line, mcdistmat, counter, h):
-  # line = [b,c] => y + bx + c = 0
-  # line => y = - bx - c
-  d = [line[1], 1]
-  r, N = len(xs)
-  negdist = 0.0
-  timeviolated = 0
-  for k=1:N
-    temp = xs[2, k] + xs[1, k]*line[1] + line[2] # check constraint
-    if temp < 0.0
-      negdist += -abs(temp)/sqrt(d'*sigmas[:,:, k]*d)[1]
-      timeviolated += 1
-    end
-  end
-  mcdistmat[1, counter] = negdist*h # area integral
-  mcdistmat[2,counter] = timeviolated*h # in minutes
-end
 
-end #module"""
+def getMCRes(xs, sigmas, line, mcdistmat, counter, h):
+    # line = [b,c] => y + bx + c = 0
+    # line => y = - bx - c
+    d = [line[0], 0]
+    r, N = len(xs)
+    negdist = 0
+    timeviolated = 0
+    for k in range(N):
+        temp = xs[1, k] + xs[0, k]*line[0] + line[1] # check constraint
+        if temp < 0:
+            negdist += -abs(temp)/numpy.sqrt(d*sigmas[:,:, k]*d)[1]
+            timeviolated += 1
+        
+    
+    mcdistmat[0, counter] = negdist*h # area integral
+    mcdistmat[1,counter] = timeviolated*h # in minutes
+
+
+
