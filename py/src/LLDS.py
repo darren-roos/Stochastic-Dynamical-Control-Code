@@ -89,10 +89,8 @@ class llds:
 
         rows = len(kmean)
         n = len(us)
-        predicted_means = numpy.zeros([rows, n])
-        predicted_covars = numpy.zeros([rows, rows, n])
 
-        predicted_means, predicted_covars = predict_hidden(kmean, kcovar, us, self)
+        predicted_means, predicted_covars = predict_hidden(kmean, kcovar, us)
 
         rows = len(self.R) # actually just the standard deviation
         predicted_vis_means = numpy.zeros(rows, n)
@@ -106,24 +104,24 @@ class llds:
 
         return predicted_vis_means, predicted_vis_covars
         
-"""
+
     def predict_hidden(self, kmean, kcovar, us):
-    # Predict the hidden states n steps into the future given the controller action.
-    # Note: us[t] predicts xs[t+1]
+        # Predict the hidden states n steps into the future given the controller action.
+        # Note: us[t] predicts xs[t+1]
 
-    rows, = len(kmean)
-    n,  = len(us)
-    predicted_means = numpy.zeros(rows, n)
-    predicted_covars = numpy.zeros(rows, rows, n)
+        rows = len(kmean)
+        n  = len(us)
+        predicted_means = numpy.zeros([rows, n])
+        predicted_covars = numpy.zeros([rows, rows, n])
 
-    predicted_means[:, 1] = self.A*kmean + self.B*us[1]
-    predicted_covars[:, :, 1] = self.Q + self.A*kcovar*numpy.transpose(self.A)
+        predicted_means[:, 0] = self.A*kmean + self.B*us[0]
+        predicted_covars[:, :, 0] = self.Q + self.A*kcovar*numpy.transpose(self.A)
 
-    for k=2:n #cast the state forward
-    predicted_means[:, k], predicted_covars[:, :, k] = step_predict(predicted_means[:,k-1], predicted_covars[:, :, k-1],us[k], self)
-    end
+        for k in range(1,n): #cast the state forward
+            predicted_means[:, k], predicted_covars[:, :, k] = step_predict(predicted_means[:,k-1], predicted_covars[:, :, k-1],us[k])
+        
 
-    return predicted_means, predicted_covars
-    end
+        return predicted_means, predicted_covars
+        
 
-    end #module """
+
