@@ -40,17 +40,17 @@ class llds:
         updatedMean , updatedVar  = step_update(pmean, pvar, ynow)
         return updatedMean, updatedVar
         
-"""
-    def step_predict(self, xprev, varprev, uprev):
-    # Return the one step ahead predicted mean and covariance.
-    pmean = self.A*xprev + self.B*uprev
-    pvar =  self.Q + self.A*varprev*transpose(self.A)
-    return pmean, pvar
-    end
 
+    def step_predict(self, xprev, varprev, uprev):
+        # Return the one step ahead predicted mean and covariance.
+        pmean = self.A*xprev + self.B*uprev
+        pvar =  self.Q + self.A*varprev*numpy.transpose(self.A)
+        return pmean, pvar
+        
+"""
     def step_update(self, pmean, pvar, ymeas):
     # Return the one step ahead measurement updated mean and covar.
-    kalmanGain = pvar*transpose(self.C)*inv(self.C*pvar*transpose(self.C) + self.R)
+    kalmanGain = pvar*numpy.transpose(self.C)*inv(self.C*pvar*numpy.transpose(self.C) + self.R)
     ypred = self.C*pmean #predicted measurement
     updatedMean = pmean + kalmanGain*(ymeas - ypred)
     rows, cols = len(pvar)
@@ -68,16 +68,16 @@ class llds:
     smoothedvars[:, :, end] = kcovars[:, :, end]
 
     for t=cols-1:-1:2
-    Pt = self.A*kcovars[:, :, t]*transpose(self.A) + self.Q
-    Jt = kcovars[:, :, t]*transpose(self.A)*inv(Pt)
+    Pt = self.A*kcovars[:, :, t]*numpy.transpose(self.A) + self.Q
+    Jt = kcovars[:, :, t]*numpy.transpose(self.A)*inv(Pt)
     smoothedmeans[:, t] = kmeans[:, t] + Jt*(smoothedmeans[:, t+1] - self.A*kmeans[:, t] - self.B*us[:, t-1])
-    smoothedvars[:,:, t] = kcovars[:,:, t] + Jt*(smoothedvars[:,:, t+1] - Pt)*transpose(Jt)
+    smoothedvars[:,:, t] = kcovars[:,:, t] + Jt*(smoothedvars[:,:, t+1] - Pt)*numpy.transpose(Jt)
     end
 
-    Pt = self.A*kcovars[:, :, 1]*transpose(self.A) + self.Q
-    Jt = kcovars[:, :, 1]*transpose(self.A)*inv(Pt)
+    Pt = self.A*kcovars[:, :, 1]*numpy.transpose(self.A) + self.Q
+    Jt = kcovars[:, :, 1]*numpy.transpose(self.A)*inv(Pt)
     smoothedmeans[:, 1] = kmeans[:, 1] + Jt*(smoothedmeans[:, 2] - self.A*kmeans[:, 1]) # no control for the prior
-    smoothedvars[:,:, 1] = kcovars[:,:, 1] + Jt*(smoothedvars[:,:, 2] - Pt)*transpose(Jt)
+    smoothedvars[:,:, 1] = kcovars[:,:, 1] + Jt*(smoothedvars[:,:, 2] - Pt)*numpy.transpose(Jt)
 
 
     return smoothedmeans, smoothedvars
@@ -101,7 +101,7 @@ class llds:
     for k=1:n # convert the hidden state to the observed state
     predicted_vis_means[:, k] = self.C*predicted_means[:,k]
 
-    predicted_vis_covars[:, k] = self.R + self.C*predicted_covars[:, :, k]*transpose(self.C)
+    predicted_vis_covars[:, k] = self.R + self.C*predicted_covars[:, :, k]*numpy.transpose(self.C)
     end
 
     return predicted_vis_means, predicted_vis_covars
@@ -117,7 +117,7 @@ class llds:
     predicted_covars = numpy.zeros(rows, rows, n)
 
     predicted_means[:, 1] = self.A*kmean + self.B*us[1]
-    predicted_covars[:, :, 1] = self.Q + self.A*kcovar*transpose(self.A)
+    predicted_covars[:, :, 1] = self.Q + self.A*kcovar*numpy.transpose(self.A)
 
     for k=2:n #cast the state forward
     predicted_means[:, k], predicted_covars[:, :, k] = step_predict(predicted_means[:,k-1], predicted_covars[:, :, k-1],us[k], self)
