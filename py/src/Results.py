@@ -263,43 +263,44 @@ def plotEllipseComp(f1means, f1covars, f2means, f2covars, xs, ts, sigma=4.605):
     legend([x1,f1,f2, b1, b2],["Underlying model","Particle filter","Kalman filter", r"PF 90$\%$ Confidence region", r"KF 90$\%$ Confidence region"], loc="best")
 
 
+
+def plotTrackingBreak(ts, xs, xsb, ys, fmeans, obs):
+
+    N = len(ts)
+    tend = ts[end]
+    skipm = int(len(ts)/80)
+    plt.figure() # plt.plot filtered results
+    mpl.rc("font", family="serif", serif="Computer Modern", size=12)
+    mpl.rc("text", usetex=True)
+    plt.subplt.plot(2,1,1)
+    x1, = plt.plot(ts, xs[0,:], "k", linewidth=3)
+    x1nf, = plt.plot(ts, xsb[0,:], "g--", linewidth=3)
+    if obs == 2:
+        y2, = plt.plot(ts[::skipm], ys[::skipm], "kx", markersize=5, markeredgewidth=1)
+    
+    k1, = plt.plot(ts, fmeans[0,:], "r--", linewidth=3)
+    plt.ylabel(r"C$_A$ [kmol.m$^{-3}$]")
+    plt.locator_params(nbins=4)
+    plt.legend([x1, k1],["Underlying model","Filtered mean"], loc="best")
+    plt.xlim([0, tend])
+    plt.subplt.plot(2,1,2)
+    x2, = plt.plot(ts, xs[2,:], "k", linewidth=3)
+    x2nf, = plt.plot(ts, xsb[2,:], "g--", linewidth=3)
+    if obs == 1:
+        y2, = plt.plot(ts[::skipm], ys[1][::skipm], "kx", markersize=5, markeredgewidth=1)
+    else:
+        y2, = plt.plot(ts[::skipm], ys[::skipm], "kx", markersize=5, markeredgewidth=1)
+    
+    k2, = plt.plot(ts, fmeans[2,:], "r--", linewidth=3)
+    plt.ylabel(r"T$_R$ [K]")
+    plt.locator_params(nbins=4)
+    plt.xlabel("Time [min]")
+    legend([y2, x2nf],["Observations","Underlying model w/o fault"], loc="best")
+    plt.xlim([0, tend])
+    
+
 """
-def plotTrackingBreak(ts, xs, xsb, ys, fmeans, obs)
-
-  N = len(ts)
-  tend = ts[end]
-  skipm = int(len(ts)/80)
-  plt.figure() # plt.plot filtered results
-  mpl.rc("font", family="serif", serif="Computer Modern", size=12)
-  mpl.rc("text", usetex=True)
-  plt.subplt.plot(2,1,1)
-  x1, = plt.plot(ts, xs[1,:], "k", linewidth=3)
-  x1nf, = plt.plot(ts, xsb[1,:], "g--", linewidth=3)
-  if obs == 2
-    y2, = plt.plot(ts[1:skipm:end], ys[1, 1:skipm:end], "kx", markersize=5, markeredgewidth=1)
-  end
-  k1, = plt.plot(ts, fmeans[1,:], "r--", linewidth=3)
-  plt.ylabel(r"C$_A$ [kmol.m$^{-3}$]")
-  plt.locator_params(nbins=4)
-  legend([x1, k1],["Underlying model","Filtered mean"], loc="best")
-  plt.xlim([0, tend])
-  plt.subplt.plot(2,1,2)
-  x2, = plt.plot(ts, xs[2,:], "k", linewidth=3)
-  x2nf, = plt.plot(ts, xsb[2,:], "g--", linewidth=3)
-  if obs == 2
-    y2, = plt.plot(ts[1:skipm:end], ys[2, 1:skipm:end], "kx", markersize=5, markeredgewidth=1)
-  else
-    y2, = plt.plot(ts[1:skipm:end], ys[1:skipm:end], "kx", markersize=5, markeredgewidth=1)
-  end
-  k2, = plt.plot(ts, fmeans[2,:], "r--", linewidth=3)
-  plt.ylabel(r"T$_R$ [K]")
-  plt.locator_params(nbins=4)
-  plt.xlabel("Time [min]")
-  legend([y2, x2nf],["Observations","Underlying model w/o fault"], loc="best")
-  plt.xlim([0, tend])
-end
-
-def plotTrackingTwoFilters(ts, xs, ys, f1means, f2means)
+def plotTrackingTwoFilters(ts, xs, ys, f1means, f2means):
 
   skipm = int(len(ts)/80)
   skip = int(len(ts)/40)
@@ -310,14 +311,14 @@ def plotTrackingTwoFilters(ts, xs, ys, f1means, f2means)
   plt.subplt.plot(2,1,1)
   x1, = plt.plot(ts, xs[1,:], "k", linewidth=3)
   k1, = plt.plot(ts[::skip], f1means[1,::skip], "rx", markersize=5, markeredgewidth=2)
-  y2, = plt.plot(ts[1:skipm:end], ys[1, 1:skipm:end], "kx", markersize=5, markeredgewidth=1)
+  y2, = plt.plot(ts[::skipm], ys[1, ::skipm], "kx", markersize=5, markeredgewidth=1)
   k12, = plt.plot(ts[::skip], f2means[1, ::skip], "bx", markersize=5, markeredgewidth=2)
   plt.ylabel(r"C$_A$ [kmol.m$^{-3}$]")
   legend([x1, k1],["Underlying model","Particle filter"], loc="best", ncol=2)
   plt.xlim([0, tend])
   plt.subplt.plot(2,1,2)
   x2, = plt.plot(ts, xs[2,:], "k", linewidth=3)
-  y2, = plt.plot(ts[1:skipm:end], ys[2, 1:skipm:end], "kx", markersize=5, markeredgewidth=1)
+  y2, = plt.plot(ts[::skipm], ys[2, ::skipm], "kx", markersize=5, markeredgewidth=1)
   k2, = plt.plot(ts[::skip], f1means[2,::skip], "rx", markersize=5, markeredgewidth=2)
   k22, = plt.plot(ts[::skip], f2means[2, ::skip], "bx", markersize=5, markeredgewidth=2)
   plt.ylabel(r"T$_R$ [K]")
@@ -326,7 +327,7 @@ def plotTrackingTwoFilters(ts, xs, ys, f1means, f2means)
   plt.xlim([0, tend])
 end
 
-def plotKLdiv(ts, kldiv, basediv, unidiv, logged)
+def plotKLdiv(ts, kldiv, basediv, unidiv, logged):
   mpl.rc("font", family="serif", serif="Computer Modern", size=12)
   mpl.rc("text", usetex=True)
 
@@ -345,7 +346,7 @@ def plotKLdiv(ts, kldiv, basediv, unidiv, logged)
   legend([kl, gd, ud],["Approximation","Baseline", "Uniform"], loc="best")
 end
 
-def calcError(x, y::Array{Float64, 2})
+def calcError(x, y::Array{Float64, 2}):
 
   r, N = size(x)
   avediff1 = (1.0/N)*sum(abs((x[1, :].-y[1, :])./x[1,:]))*100.0
@@ -356,7 +357,7 @@ def calcError(x, y::Array{Float64, 2})
   return avediff1, avediff2
 end
 
-def calcError(x, y::Float64)
+def calcError(x, y::Float64):
 
   r, N = size(x)
   avediff1 = (1.0/N)*sum(abs((x[1, :] - y)./y))*100.0
@@ -365,7 +366,7 @@ def calcError(x, y::Float64)
   return avediff1
 end
 
-def calcError2(x, y::Float64)
+def calcError2(x, y::Float64):
 
   r, N = size(x)
   avediff1 = (1.0/N)*sum(abs((x[1, :] - y)./y))*100.0
@@ -373,7 +374,7 @@ def calcError2(x, y::Float64)
   return avediff1
 end
 
-def calcError3(x, y::Float64)
+def calcError3(x, y::Float64):
 
   N = len(x)
   avediff1 = (1.0/N)*sum(abs((x .- y)./y))*100.0
@@ -381,14 +382,14 @@ def calcError3(x, y::Float64)
   return avediff1
 end
 
-def calcEnergy(us, uss, h)
+def calcEnergy(us, uss, h):
   N = len(us)
   avecost = (1./(60.0*N))*sum(abs(us-uss))
   print("Average Input (kW): ", avecost)
   return avecost
 end
 
-def checkConstraint(ts, xs, line)
+def checkConstraint(ts, xs, line):
   # line = [b,c] => y + bx + c = 0
   # line => y = - bx - c
   r, N = size(xs)
@@ -424,7 +425,7 @@ def checkConstraint(ts, xs, line)
   plt.ylabel(r"Clearance")
 end
 
-def getMCRes!(xs, sigmas, line, mcdistmat, counter, h)
+def getMCRes!(xs, sigmas, line, mcdistmat, counter, h):
   # line = [b,c] => y + bx + c = 0
   # line => y = - bx - c
   d = [line[1], 1.0]
