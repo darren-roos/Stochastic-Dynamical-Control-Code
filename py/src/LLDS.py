@@ -1,4 +1,4 @@
-
+import numpy
 
 class llds:
   # Assume zero mean transition and emission defs.
@@ -47,17 +47,17 @@ class llds:
         pvar =  self.Q + self.A*varprev*numpy.transpose(self.A)
         return pmean, pvar
         
-"""
-    def step_update(self, pmean, pvar, ymeas):
-    # Return the one step ahead measurement updated mean and covar.
-    kalmanGain = pvar*numpy.transpose(self.C)*inv(self.C*pvar*numpy.transpose(self.C) + self.R)
-    ypred = self.C*pmean #predicted measurement
-    updatedMean = pmean + kalmanGain*(ymeas - ypred)
-    rows, cols = len(pvar)
-    updatedVar = (eye(rows) - kalmanGain*self.C)*pvar
-    return updatedMean, updatedVar
-    end
 
+    def step_update(self, pmean, pvar, ymeas):
+        # Return the one step ahead measurement updated mean and covar.
+        kalmanGain = pvar*numpy.transpose(self.C)*numpy.linalg.inv(self.C*pvar*numpy.transpose(self.C) + self.R)
+        ypred = self.C*pmean #predicted measurement
+        updatedMean = pmean + kalmanGain*(ymeas - ypred)
+        rows, cols = len(pvar)
+        updatedVar = (numpy.eye(rows) - kalmanGain*self.C)*pvar
+        return updatedMean, updatedVar
+        
+"""
     def smooth(self, kmeans, kcovars, us):
     # Returns the smoothed means and covariances
     # Note, this is only for matrix entries!
@@ -69,13 +69,13 @@ class llds:
 
     for t=cols-1:-1:2
     Pt = self.A*kcovars[:, :, t]*numpy.transpose(self.A) + self.Q
-    Jt = kcovars[:, :, t]*numpy.transpose(self.A)*inv(Pt)
+    Jt = kcovars[:, :, t]*numpy.transpose(self.A)*numpy.linalg.inv(Pt)
     smoothedmeans[:, t] = kmeans[:, t] + Jt*(smoothedmeans[:, t+1] - self.A*kmeans[:, t] - self.B*us[:, t-1])
     smoothedvars[:,:, t] = kcovars[:,:, t] + Jt*(smoothedvars[:,:, t+1] - Pt)*numpy.transpose(Jt)
     end
 
     Pt = self.A*kcovars[:, :, 1]*numpy.transpose(self.A) + self.Q
-    Jt = kcovars[:, :, 1]*numpy.transpose(self.A)*inv(Pt)
+    Jt = kcovars[:, :, 1]*numpy.transpose(self.A)*numpy.linalg.inv(Pt)
     smoothedmeans[:, 1] = kmeans[:, 1] + Jt*(smoothedmeans[:, 2] - self.A*kmeans[:, 1]) # no control for the prior
     smoothedvars[:,:, 1] = kcovars[:,:, 1] + Jt*(smoothedvars[:,:, 2] - Pt)*numpy.transpose(Jt)
 
