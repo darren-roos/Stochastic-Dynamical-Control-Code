@@ -51,10 +51,16 @@ class llds:
         # Return the one step ahead measurement updated mean and covar.
         temp = numpy.matmul(numpy.matmul(self.C, pvar), numpy.transpose(self.C))
         inverse = numpy.linalg.inv(temp + self.R)
-        temp2 = numpy.transpose([numpy.matmul(pvar, numpy.transpose(self.C))])
+        temp2 = numpy.matmul(pvar, numpy.transpose(self.C))
+        if temp2.ndim==1:
+            temp2 = numpy.transpose([temp2])
+        
         kalmanGain = numpy.matmul(temp2, inverse)
         ypred = numpy.matmul(self.C, pmean) #predicted measurement
-        updatedMean = pmean + numpy.transpose(kalmanGain*(ymeas - ypred))
+        if ymeas.ndim==0:
+            updatedMean = pmean + numpy.transpose(kalmanGain*(ymeas - ypred))
+        else:
+            updatedMean = pmean + numpy.transpose(numpy.matmul(kalmanGain, (ymeas - ypred)))
         rows, cols = numpy.shape(pvar)
         updatedVar = numpy.matmul((numpy.eye(rows) - kalmanGain*self.C), pvar)
         return updatedMean, updatedVar

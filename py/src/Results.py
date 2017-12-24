@@ -73,7 +73,7 @@ def plotTracking(ts, xs, ys, fmeans, us, obs):
     plt.subplot(subplt,1,1)
     x1, = plt.plot(ts, xs[0,:], "k", linewidth=3)
     if obs == 2: # plt.plot second measurement
-        y2, = plt.plot(ts[1][::skipmeas], ys[1][::skipmeas], "kx", markersize=5, markeredgewidth=1)
+        y2, = plt.plot(ts[::skipmeas], ys[0][::skipmeas], "kx", markersize=5, markeredgewidth=1)
     
     k1, = plt.plot(ts[::skipmean], fmeans[0][::skipmean], "bx", markersize=5, markeredgewidth = 2)
     plt.ylabel(r"C$_A$ [kmol.m$^{-3}$]")
@@ -84,10 +84,10 @@ def plotTracking(ts, xs, ys, fmeans, us, obs):
 
     plt.subplot(subplt,1,2)
     x2, = plt.plot(ts, xs[1,:], "k", linewidth=3)
-    if obs == 0:
+    if obs == 1:
         y2, = plt.plot(ts[::skipmeas], ys[::skipmeas], "kx", markersize=5, markeredgewidth=1)
     else:
-        y2, = plt.plot(ts[::skipmeas], ys[::skipmeas], "kx", markersize=5, markeredgewidth=1)
+        y2, = plt.plot(ts[::skipmeas], ys[1][::skipmeas], "kx", markersize=5, markeredgewidth=1)
     
     k2, = plt.plot(ts[::skipmean], fmeans[1][::skipmean], "bx", markersize=5, markeredgewidth = 2)
     plt.ylabel(r"T$_R$ [K]")
@@ -350,15 +350,15 @@ def plotKLdiv(ts, kldiv, basediv, unidiv, logged):
 
 def calcError(x, y):
 
-  r, N = len(x)
-  avediff1 = (1/N)*sum(abs(numpy.divide((x[:,0]-y[:,0]), x[:,0])))*100
-  avediff2 = (1/N)*sum(abs((numpy.divide(x[:,1]-y[:,1]), x[:,1])))*100
+  r, N = x.shape
+  avediff1 = (1/N)*sum([abs((xt-yt) / xt) for xt, yt in zip(x[0], y[0])])*100
+  avediff2 = (1/N)*sum([abs((xt-yt) / xt) for xt, yt in zip(x[1], y[1])])*100
 
   print("Average Concentration Error: ", round(avediff1, 4),  "%")
   print("Average Temperature Error: ", round(avediff2, 4), "%")
   return avediff1, avediff2
 
-def calcError(x, y):
+def calcError1(x, y):
 
     r, N = numpy.shape(x)
     print(numpy.shape(x[0]))
