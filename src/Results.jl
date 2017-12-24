@@ -16,7 +16,7 @@ function plotTracking(ts, xs, ys, fmeans, us, obs, setpoint)
   else
     subplt = 3
   end
-  rc("font", family="serif", serif="Computer Modern", size=32)
+  rc("font", family="serif", serif="Computer Modern", size=12)
   rc("text", usetex=true)
 
   skipmeas = int(length(ts)/80)
@@ -67,7 +67,7 @@ function plotTracking(ts, xs, ys, fmeans, us, obs)
   else
     subplt = 3
   end
-  rc("font", family="serif", serif="Computer Modern", size=32)
+  rc("font", family="serif", serif="Computer Modern", size=12)
   rc("text", usetex=true)
 
   skipmeas = int(length(ts)/80)
@@ -109,7 +109,7 @@ function plotTracking(ts, xs, ys, fmeans, us, obs)
 end
 
 function plotStateSpaceSwitch(linsystems, xs)
-  rc("font", family="serif", serif="Computer Modern", size=32)
+  rc("font", family="serif", serif="Computer Modern", size=12)
   rc("text", usetex=true)
   figure() # Model and state space
   for k=1:length(linsystems)
@@ -132,7 +132,7 @@ end
 function plotSwitchSelection(numSwitches, strack, ts, cbaron)
 
   figure() # Model selection
-  rc("font", family="serif", serif="Computer Modern", size=32)
+  rc("font", family="serif", serif="Computer Modern", size=12)
   rc("text", usetex=true)
   axes = Array(Any, numSwitches)
   im = 0
@@ -167,7 +167,7 @@ end
 
 function plotEllipses(ts, xs, fmeans, fcovars, fname, legloc)
 
-  rc("font", family="serif", serif="Computer Modern", size=32)
+  rc("font", family="serif", serif="Computer Modern", size=12)
   rc("text", usetex=true)
   N = length(ts)
   skip = int(length(ts)/40)
@@ -189,7 +189,7 @@ end
 
 function plotEllipses(ts, xs, fmeans, fcovars, fname, line, sp, nf, sigma, pick, legloc)
 
-  rc("font", family="serif", serif="Computer Modern", size=32)
+  rc("font", family="serif", serif="Computer Modern", size=12)
   rc("text", usetex=true)
   N = length(ts)
   skip = int(length(ts)/40)
@@ -239,7 +239,7 @@ function plotEllipseComp(f1means, f1covars, f2means, f2covars, xs, ts, sigma=4.6
   N = length(ts)
   skip = int(length(ts)/30)
   figure()
-  rc("font", family="serif", serif="Computer Modern", size=32)
+  rc("font", family="serif", serif="Computer Modern", size=12)
   rc("text", usetex=true)
   x1, = plot(xs[1,:][:], xs[2,:][:], "k",linewidth=3)
   f1, = plot(f1means[1, 1:skip:end][:], f1means[2, 1:skip:end][:], "yx", markersize=5, markeredgewidth = 2)
@@ -269,7 +269,7 @@ function plotTrackingBreak(ts, xs, xsb, ys, fmeans, obs)
   tend = ts[end]
   skipm = int(length(ts)/80)
   figure() # Plot filtered results
-  rc("font", family="serif", serif="Computer Modern", size=32)
+  rc("font", family="serif", serif="Computer Modern", size=12)
   rc("text", usetex=true)
   subplot(2,1,1)
   x1, = plot(ts, xs[1,:]', "k", linewidth=3)
@@ -304,7 +304,7 @@ function plotTrackingTwoFilters(ts, xs, ys, f1means, f2means)
   skip = int(length(ts)/40)
   tend = ts[end]
   figure() # Plot filtered results
-  rc("font", family="serif", serif="Computer Modern", size=32)
+  rc("font", family="serif", serif="Computer Modern", size=12)
   rc("text", usetex=true)
   subplot(2,1,1)
   x1, = plot(ts, xs[1,:]', "k", linewidth=3)
@@ -326,7 +326,7 @@ function plotTrackingTwoFilters(ts, xs, ys, f1means, f2means)
 end
 
 function plotKLdiv(ts, kldiv, basediv, unidiv, logged)
-  rc("font", family="serif", serif="Computer Modern", size=32)
+  rc("font", family="serif", serif="Computer Modern", size=12)
   rc("text", usetex=true)
 
   figure()
@@ -349,7 +349,6 @@ function calcError(x, y::Array{Float64, 2})
   r, N = size(x)
   avediff1 = (1.0/N)*sum(abs((x[1, :].-y[1, :])./x[1,:]))*100.0
   avediff2 = (1.0/N)*sum(abs((x[2, :].-y[2, :])./x[2,:]))*100.0
-
   println("Average Concentration Error: ", round(avediff1, 4),  "%")
   println("Average Temperature Error: ", round(avediff2, 4), "%")
   return avediff1, avediff2
@@ -359,7 +358,6 @@ function calcError(x, y::Float64)
 
   r, N = size(x)
   avediff1 = (1.0/N)*sum(abs((x[1, :] - y)./y))*100.0
-
   println("Average Concentration Error: ", round(avediff1, 4),  "%")
   return avediff1
 end
@@ -367,6 +365,7 @@ end
 function calcError2(x, y::Float64)
 
   r, N = size(x)
+  
   avediff1 = (1.0/N)*sum(abs((x[1, :] - y)./y))*100.0
 
   return avediff1
@@ -414,7 +413,7 @@ function checkConstraint(ts, xs, line)
   println("Minimum Negative Clearance: ", minneg)
 
   figure()
-  rc("font", family="serif", size=32)
+  rc("font", family="serif", size=12)
   rc("text", usetex=true)
 
   plot(ts, zeros(N), "r", linewidth=1)
