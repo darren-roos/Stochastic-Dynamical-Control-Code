@@ -21,7 +21,7 @@ def ellipse(mean, covariance, sigma=4.605):
         smallest_eigenvec = eigenvec[:,0]
     
 
-    angle = numpy.atan2(largest_eigenvec[2], largest_eigenvec[1])
+    angle = numpy.arctan2(largest_eigenvec[1], largest_eigenvec[0])
 
     if angle < 0.0:
         angle = angle + 2*numpy.pi
@@ -29,7 +29,7 @@ def ellipse(mean, covariance, sigma=4.605):
 
     chisquare_val = numpy.sqrt(sigma)
 
-    theta_grid = numpy.linspace(0.0,2.0*pi)
+    theta_grid = numpy.linspace(0.0,2.0*numpy.pi)
     phi = angle
     X0=mean[0]
     Y0=mean[1]
@@ -46,7 +46,7 @@ def ellipse(mean, covariance, sigma=4.605):
     # rotate the ellipse to some angle phi
     r_ellipse = numpy.zeros([2, len(ellipse_x_r)])
     for k in range(len(ellipse_x_r)):
-        r_ellipse[:, k] = numpy.matmul(R, [[ellipse_x_r[k]], [ellipse_y_r[k]]]) + mean
+        r_ellipse[:, k] = numpy.matmul(R, [ellipse_x_r[k], ellipse_y_r[k]]) + mean
     
     return r_ellipse[0,:][:], r_ellipse[1,:][:]
     

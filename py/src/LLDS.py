@@ -10,7 +10,7 @@ class llds:
   # I assume the simplest self I will deal with has matrix A, B and float C therefore
   # the slightly parametric type. Also that specific simple case has only one input.
   # this is to avoid ugly notation later.
-    def __init__(A, B, C, Q, R):
+    def __init__(self, A, B, C, Q, R):
         self.A = A
         self.B = B
         self.C = C
@@ -20,41 +20,43 @@ class llds:
 
     def step(self, xprev, uprev):
         # Controlled, move multivariate self one time step forward.
-
-        xnow = self.A*xprev + self.B*uprev
-        ynow = self.C*xnow
+        xnow = numpy.matmul(self.A, xprev) + self.B*uprev
+        ynow = numpy.matmul(self.C, xnow)
 
         return xnow,  ynow
         
     
     def init_filter(self, initmean, initvar, ynow):
         # Initialise the filter. No prediction step, only a measurement update step.
-        updatedMean , updatedVar  = step_update(initmean, initvar, ynow)
+        updatedMean , updatedVar  = self.step_update(initmean, initvar, ynow)
         return updatedMean, updatedVar
         
 
     def step_filter(self, prevmean, prevvar, uprev, ynow):
         # Return the posterior over the current state given the observation and previous
         # filter result.
-        pmean , pvar  = step_predict(prevmean, prevvar, uprev)
-        updatedMean , updatedVar  = step_update(pmean, pvar, ynow)
+        pmean , pvar  = self.step_predict(prevmean, prevvar, uprev)
+        updatedMean , updatedVar  = self.step_update(pmean, pvar, ynow)
         return updatedMean, updatedVar
         
 
     def step_predict(self, xprev, varprev, uprev):
         # Return the one step ahead predicted mean and covariance.
-        pmean = self.A*xprev + self.B*uprev
-        pvar =  self.Q + self.A*varprev*numpy.transpose(self.A)
+        pmean = numpy.matmul(self.A, xprev) + self.B*uprev
+        pvar =  self.Q + numpy.matmul(numpy.matmul(self.A, varprev), numpy.transpose(self.A))
         return pmean, pvar
         
 
     def step_update(self, pmean, pvar, ymeas):
         # Return the one step ahead measurement updated mean and covar.
-        kalmanGain = pvar*numpy.transpose(self.C)*numpy.linalg.inv(self.C*pvar*numpy.transpose(self.C) + self.R)
-        ypred = self.C*pmean #predicted measurement
-        updatedMean = pmean + kalmanGain*(ymeas - ypred)
+        temp = numpy.matmul(numpy.matmul(self.C, pvar), numpy.transpose(self.C))
+        inverse = numpy.linalg.inv(temp + self.R)
+        temp2 = numpy.transpose([numpy.matmul(pvar, numpy.transpose(self.C))])
+        kalmanGain = numpy.matmul(temp2, inverse)
+        ypred = numpy.matmul(self.C, pmean) #predicted measurement
+        updatedMean = pmean + numpy.transpose(kalmanGain*(ymeas - ypred))
         rows, cols = numpy.shape(pvar)
-        updatedVar = (numpy.eye(rows) - kalmanGain*self.C)*pvar
+        updatedVar = numpy.matmul((numpy.eye(rows) - kalmanGain*self.C), pvar)
         return updatedMean, updatedVar
         
 

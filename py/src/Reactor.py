@@ -167,20 +167,20 @@ class Reactor:
         xguess1 = [0.073, 493.0]
         xguess2 = [0.21, 467.0]
         xguess3 = [0.999, 310.0]
-        f = lambda x, xvec: Reactor.reactor_func(x, 0.0, self, xvec)
+        f = lambda x: self.reactor_func(x, 0.0)
 
         xx1res = scipy.optimize.fsolve(f, xguess1)
         xx2res = scipy.optimize.fsolve(f, xguess2)
         xx3res = scipy.optimize.fsolve(f, xguess3)
 
-        ops = zeros(length(xx1res.zero), 3)
-        ops[:, 1] = xx1res.zero
-        ops[:, 2] = xx2res.zero
-        ops[:, 3] = xx3res.zero
+        ops = numpy.zeros([len(xx1res), 3])
+        ops[:, 0] = xx1res
+        ops[:, 1] = xx2res
+        ops[:, 2] = xx3res
 
         for k in range(3):
             op = ops[:, k]
-            A, B, b = self.linearise(op, h, self)
+            A, B, b = self.linearise(op, h)
             linsystems[k] = LinearReactor(op, A, B, b)
 
         return linsystems
