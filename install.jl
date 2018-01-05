@@ -1,0 +1,7 @@
+Pkg.add("Distributions")
+Pkg.add("PyPlot")
+Pkg.add("NLsolve")
+Pkg.add("JuMP")
+Pkg.add("Ipopt")
+Pkg.add("Mosek")
+Pkg.add("KernelDensity")
