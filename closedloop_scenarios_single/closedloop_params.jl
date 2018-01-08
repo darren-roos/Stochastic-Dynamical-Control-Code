@@ -17,6 +17,7 @@ using Ipopt
 using Mosek
 using Auxiliary
 using KernelDensity
+using Dates
 
 # Extend the Base Library
 function Base.convert(::Type{Float64}, x::Array{Float64, 1})
@@ -98,6 +99,9 @@ QQ = zeros(2, 2)
 QQ[1] = 10000.0 # due to the magnitude of the concentration
 RR = 0.000001 #
 
+a = round(Int64, time() * 1000) #If this fails, 1515377081187 is a great value to use
+println(a)
+srand(a)
 # seed the random number generator
-srand(745) # good for KF, SPF
+#srand(745) # good for KF, SPF
 # srand(3265) # good for RBPF
