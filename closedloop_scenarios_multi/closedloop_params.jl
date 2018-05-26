@@ -96,7 +96,7 @@ C1 = [0.0 1.0] # we measure only temperature
 # Controller settings (using quadratic cost function)
 QQ = zeros(2, 2)
 QQ[1] = 10000.0 # due to the magnitude of the concentration
-RR = 0.000001 #
+RR = 1e-5 #
 
 # seed the random number generator
 srand(745) # good for KF, SPF
